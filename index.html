@@ -223,12 +223,87 @@ textarea.fc{resize:vertical;min-height:70px;}
 .debt-badge:hover{border-color:var(--gold);color:var(--gold);}
 .debt-badge.selected{border-color:var(--gold);background:rgba(0,168,150,.15);color:var(--gold);font-weight:700;}
 
-/* RESPONSIVE */
+/* RESPONSIVE — MOBILE FIRST */
 @media(max-width:640px){
-  .main{padding:14px;}.header{padding:10px 14px;}.nw-amount{font-size:30px;}
-  .fr{grid-template-columns:1fr;}.rate-item:nth-child(n+3){display:none;}
-  .tbl-wrap th:nth-child(n+5),.tbl-wrap td:nth-child(n+5){display:none;}
-  .amount-wrap .fc{padding-left:60px;}
+  /* layout */
+  .main{padding:12px;}
+  .header{padding:10px 12px;gap:8px;}
+  .header-title h1{font-size:20px;}
+  .header-title small{display:none;}
+
+  /* hide rate widget detail on small screens */
+  .rate-row{padding:6px 10px;gap:8px;}
+  .rate-item .rl{display:none;}
+  .rate-item .rv{font-size:12px;}
+  .rate-sep{display:none;}
+  .rate-widget small{display:none;}
+
+  /* search: hide on mobile, show only icon */
+  .search-input{width:36px;padding:7px 10px;overflow:hidden;}
+  .search-input:focus{width:200px;}
+
+  /* nav */
+  .nav{padding:0 8px;}
+  .nav-btn{padding:10px 10px;font-size:12px;}
+  .nav-dropdown-btn{padding:10px 10px;font-size:12px;}
+
+  /* dashboard */
+  .nw-amount{font-size:28px;}
+  .nw-card{padding:20px 16px;}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .si{font-size:22px;margin-bottom:6px;}
+  .sv{font-size:16px;}
+  .sl{font-size:10px;}
+
+  /* forms */
+  .fr{grid-template-columns:1fr;}
+  .amount-wrap .fc{padding-left:56px;}
+  .currency-toggle button{padding:0 7px;font-size:11px;}
+  .modal{padding:18px;}
+  .modal-title{font-size:15px;}
+
+  /* tables — hide less important cols */
+  .tbl-wrap th:nth-child(n+4),.tbl-wrap td:nth-child(n+4){display:none;}
+  .tbl-wrap th,.tbl-wrap td{padding:10px 10px;font-size:12px;}
+
+  /* transactions */
+  .tx-btns{gap:6px;}
+  .tx-btn{padding:12px 8px;font-size:12px;min-width:90px;}
+  .tx-btn .tbi{font-size:20px;}
+  .tx-item{padding:10px 12px;gap:8px;}
+  .tx-amt{font-size:14px;}
+  .tx-desc{font-size:12px;}
+  .tx-sum{gap:6px;}
+  .tx-sc{padding:9px 10px;}
+  .tx-sc .tsv{font-size:14px;}
+
+  /* settings */
+  .settings-row{flex-direction:column;align-items:flex-start;gap:10px;}
+  .settings-input{width:100%;}
+
+  /* PIN screen */
+  .pin-pad{grid-template-columns:repeat(3,64px);gap:8px;}
+  .pin-key{width:64px;height:64px;font-size:20px;}
+  .pin-title{font-size:22px;}
+
+  /* totals bar */
+  .totbar{gap:12px;}
+  .totbar .tv{font-size:14px;}
+
+  /* chart */
+  .cbv{width:90px;font-size:10px;}
+
+  /* section header */
+  .section-ttl{font-size:15px;}
+  .section-hdr{margin-bottom:12px;}
+
+  /* buttons */
+  .btn{padding:8px 14px;font-size:12px;}
+  .btn-sm{padding:4px 8px;font-size:11px;}
+
+  /* drive button — shrink */
+  .btn-drive span:not(svg){display:none;}
+  .btn-drive{padding:7px 10px;}
 }
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--bg2);}
@@ -1132,38 +1207,26 @@ async function fetchRates(){
   st.className='rate-status loading';
   st.innerHTML='<span class="spin">⟳</span> جاري التحميل...';
   try{
-    const fxRes=await fetch('https://api.frankfurter.app/latest?from=USD&to=EGP');
-    if(!fxRes.ok) throw new Error();
-    const fx=await fxRes.json();
-    USD_EGP=fx.rates.EGP;
-    const usdEl=document.getElementById('usd-rate');
-    if(usdEl) usdEl.textContent=fmtD(USD_EGP);
-
-    const gRes=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://data-asg.goldprice.org/dbXRates/USD'));
-    if(!gRes.ok) throw new Error();
-    const gRaw=await gRes.json();
-    const gData=JSON.parse(gRaw.contents);
-    const xau=gData.items[0].xauPrice;
-    setGP((xau/31.1035)*USD_EGP);
+    // جلب سعر الدولار و سعر الذهب بشكل متوازي
+    const [fxRes, goldRes] = await Promise.all([
+      fetch('https://api.frankfurter.app/latest?from=USD&to=EGP'),
+      fetch('https://api.gold-api.com/price/XAU')   // مجاني، CORS، بدون key
+    ]);
+    if(!fxRes.ok || !goldRes.ok) throw new Error('fetch failed');
+    const fx = await fxRes.json();
+    const gold = await goldRes.json();
+    USD_EGP = fx.rates.EGP;
+    const usdEl = document.getElementById('usd-rate');
+    if(usdEl) usdEl.textContent = fmtD(USD_EGP);
+    // gold.price = سعر الأونصة بالدولار
+    const xauUsd = gold.price;
+    setGP((xauUsd / 31.1035) * USD_EGP);
     st.className='rate-status ok';
     st.innerHTML='✓ محدث • '+new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
-  }catch{
-    try{
-      const [fxR,yR]=await Promise.all([
-        fetch('https://api.frankfurter.app/latest?from=USD&to=EGP'),
-        fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/GC%3DF?interval=1d&range=1d'))
-      ]);
-      const fx=await fxR.json(); USD_EGP=fx.rates.EGP;
-      const usdEl2=document.getElementById('usd-rate');
-      if(usdEl2) usdEl2.textContent=fmtD(USD_EGP);
-      const yr=await yR.json(); const yd=JSON.parse(yr.contents);
-      setGP((yd.chart.result[0].meta.regularMarketPrice/31.1035)*USD_EGP);
-      st.className='rate-status ok'; st.innerHTML='✓ سعر مباشر';
-    }catch{
-      st.className='rate-status err';
-      st.innerHTML='⚠️ فشل التحميل — انقر للمحاولة';
-      st.onclick=()=>{st.onclick=null;fetchRates();};
-    }
+  }catch(e){
+    // fallback: سعر ثابت تقريبي لو فشل الإنترنت
+    st.className='rate-status err';
+    st.innerHTML='⚠️ فشل التحميل — <span onclick="fetchRates()" style="cursor:pointer;text-decoration:underline;">إعادة المحاولة</span>';
   }
   renderAll();
 }
