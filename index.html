@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حسابي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#00A896; --gold-light:#33C4B4; --gold-dark:#00897B;
+  --bg:#0B0E14; --bg2:#141921; --bg3:#1B222C;
+  --card:#1F2633; --card2:#252D3D; --border:#313A4D;
+  --text:#E6EAF0; --text2:#A0ACBF; --text3:#6C798C;
+  --green:#4caf7d; --red:#e05555; --blue:#00A896;
+  --indigo:#1F3B7F; --accent:#F7941D;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,var(--bg2),var(--card));border-bottom:2px solid var(--gold-dark);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.5);gap:12px;flex-wrap:wrap;}
+.header-title{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--gold),var(--indigo));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 12px rgba(0,168,150,.3);}
+.header-title h1{font-family:'Cairo',sans-serif;font-weight:800;font-size:24px;color:var(--gold);line-height:1;}
+.header-title small{font-size:11px;color:var(--text2);display:block;}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+
+/* RATE WIDGET */
+.rate-widget{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.rate-row{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:7px 14px;gap:14px;}
+.rate-sep{color:var(--border);font-size:16px;}
+.rate-item{display:flex;flex-direction:column;align-items:center;min-width:60px;}
+.rate-item .rl{font-size:10px;color:var(--text3);}
+.rate-item .rv{font-size:14px;font-weight:700;color:var(--gold-light);}
+.rate-status{font-size:11px;padding:2px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:3px;align-self:flex-end;}
+.rate-status.loading{color:var(--text3);}
+.rate-status.ok{background:rgba(76,175,125,.15);color:var(--green);}
+.rate-status.err{background:rgba(224,85,85,.15);color:var(--red);cursor:pointer;}
+
+/* EYE BTN */
+.btn-eye{background:none;border:1px solid var(--border);color:var(--text2);border-radius:9px;padding:7px 11px;font-size:17px;cursor:pointer;transition:all .2s;line-height:1;}
+.btn-eye:hover{border-color:var(--gold);color:var(--gold);}
+.btn-hdr{background:none;border:1px solid var(--border);color:var(--text2);border-radius:9px;padding:7px 11px;font-size:17px;cursor:pointer;transition:all .2s;line-height:1;display:inline-flex;align-items:center;font-family:'Cairo',sans-serif;}
+.btn-hdr:hover{border-color:var(--gold);color:var(--gold);}
+.btn-drive{display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:9px;padding:7px 13px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-drive:hover{border-color:#4285f4;color:#4285f4;background:rgba(66,133,244,.08);}
+body.nums-hidden .sensitive{filter:blur(7px);user-select:none;transition:filter .2s;}
+body.nums-hidden .sensitive:hover{filter:blur(0);}
+
+/* SPIN */
+.spin{animation:spin 1.2s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* NAV */
+.nav{display:flex;align-items:stretch;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;gap:2px;}
+.nav-btn{padding:11px 16px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text2);font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:4px;}
+.nav-btn:hover{color:var(--gold);}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* DROPDOWN */
+.nav-dropdown{position:relative;display:flex;align-items:stretch;}
+.nav-dropdown-btn{padding:11px 16px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text2);font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.nav-dropdown-btn:hover{color:var(--gold);}
+.nav-dropdown-btn.has-active{color:var(--gold);border-bottom:3px solid var(--gold);}
+.nav-dropdown-btn .arrow{font-size:10px;transition:transform .2s;}
+.nav-dropdown:hover .nav-dropdown-btn .arrow{transform:rotate(180deg);}
+.dropdown-menu{display:none;position:absolute;top:100%;right:0;background:var(--bg2);border:1px solid var(--border);border-radius:0 0 12px 12px;min-width:180px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;}
+.nav-dropdown:hover .dropdown-menu{display:block;}
+.dropdown-item{display:flex;align-items:center;gap:8px;padding:11px 18px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;background:none;border:none;width:100%;text-align:right;transition:background .15s;}
+.dropdown-item:hover{background:rgba(0,168,150,.08);color:var(--gold);}
+.dropdown-item.active{color:var(--gold);background:rgba(0,168,150,.06);}
+
+/* MAIN */
+.main{padding:20px;max-width:1100px;margin:0 auto;}
+.page{display:none;}.page.active{display:block;}
+
+/* NET WORTH CARD */
+.nw-card{background:linear-gradient(135deg,var(--indigo),var(--card));border:2px solid var(--gold-dark);border-radius:18px;padding:28px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
+.nw-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,168,150,.15),transparent 70%);pointer-events:none;}
+.nw-label{font-size:13px;color:var(--text2);margin-bottom:6px;}
+.nw-amount{font-size:40px;font-weight:900;color:var(--gold);letter-spacing:-1px;margin-bottom:3px;}
+.nw-sub{font-size:13px;color:var(--text2);}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;transition:border-color .2s;}
+.stat-card:hover{border-color:var(--gold-dark);}
+.si{font-size:26px;margin-bottom:8px;}
+.sl{font-size:11px;color:var(--text2);margin-bottom:3px;}
+.sv{font-size:20px;font-weight:700;}
+.stat-card.gold .sv{color:var(--gold);}
+.stat-card.green .sv{color:var(--green);}
+.stat-card.red .sv{color:var(--red);}
+.stat-card.blue .sv{color:var(--gold);}
+
+/* SECTION */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.section-ttl{font-size:17px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:7px;}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border:none;border-radius:9px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#fff;}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,168,150,.4);}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--text2);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-danger{background:rgba(224,85,85,.15);border:1px solid rgba(224,85,85,.3);color:var(--red);}
+.btn-danger:hover{background:rgba(224,85,85,.25);}
+.btn-green{background:rgba(76,175,125,.15);border:1px solid rgba(76,175,125,.3);color:var(--green);}
+.btn-green:hover{background:rgba(76,175,125,.25);}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:7px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:1000;align-items:center;justify-content:center;padding:14px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gold-dark);border-radius:18px;padding:24px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;animation:slideUp .22s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+.modal-title{font-size:17px;font-weight:700;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:7px;}
+
+/* FORM */
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;}
+.fc{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;transition:border-color .2s;direction:rtl;}
+.fc:focus{border-color:var(--gold);}
+select.fc{cursor:pointer;}select.fc option{background:var(--bg2);}
+textarea.fc{resize:vertical;min-height:70px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-actions{display:flex;gap:8px;margin-top:18px;}
+
+/* AMOUNT INPUT WITH CURRENCY TOGGLE */
+.amount-wrap{position:relative;}
+.amount-wrap .fc{padding-left:70px;}
+.currency-toggle{position:absolute;left:0;top:0;bottom:0;display:flex;border-radius:0 9px 9px 0;overflow:hidden;border-right:1px solid var(--border);}
+.currency-toggle button{padding:0 10px;background:none;border:none;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;color:var(--text2);}
+.currency-toggle button.active{background:var(--gold);color:#fff;}
+.converted-hint{font-size:11px;color:var(--text3);margin-top:4px;min-height:16px;}
+
+/* INFO BOX */
+.info-box{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:9px 12px;font-size:12px;color:var(--text2);margin-bottom:14px;}
+.ib-val{font-size:13px;font-weight:700;color:var(--gold);}
+
+/* TABLE */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.tbl-wrap table{width:100%;border-collapse:collapse;}
+.tbl-wrap th{padding:10px 14px;background:var(--bg3);font-size:11px;color:var(--text2);font-weight:600;text-align:right;border-bottom:1px solid var(--border);}
+.tbl-wrap td{padding:13px 14px;font-size:13px;border-bottom:1px solid rgba(49,58,77,.5);vertical-align:middle;}
+.tbl-wrap tr:last-child td{border-bottom:none;}
+.tbl-wrap tr:hover td{background:rgba(0,168,150,.03);}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;}
+.bg{background:rgba(0,168,150,.15);color:var(--gold);}
+.bgr{background:rgba(76,175,125,.15);color:var(--green);}
+.brd{background:rgba(224,85,85,.15);color:var(--red);}
+.bbl{background:rgba(0,168,150,.15);color:var(--gold);}
+.bgray{background:rgba(255,255,255,.08);color:var(--text2);}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:44px 20px;color:var(--text3);}
+.empty-state .ei{font-size:44px;margin-bottom:10px;}
+
+/* PROGRESS */
+.prog{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:5px;}
+.prog-fill{height:100%;border-radius:3px;transition:width .4s;}
+.prog-fill.g{background:var(--green);}
+.prog-fill.gld{background:var(--gold);}
+
+/* PAYMENT ITEM */
+.pay-item{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg3);border-radius:7px;margin-bottom:7px;font-size:12px;}
+
+/* CHART */
+.cbr{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.cbl{font-size:11px;color:var(--text2);width:75px;flex-shrink:0;}
+.cbb{flex:1;height:26px;background:var(--bg3);border:1px solid var(--border);border-radius:5px;overflow:hidden;}
+.cbf{height:100%;border-radius:5px;display:flex;align-items:center;padding-right:8px;font-size:11px;font-weight:700;color:#fff;transition:width .6s;min-width:36px;justify-content:flex-end;}
+.cbv{font-size:11px;font-weight:700;width:110px;flex-shrink:0;}
+
+/* UTILS */
+.tg{color:var(--gold);}.tr{color:var(--red);}.tgr{color:var(--green);}.tm{color:var(--text2);}
+.fw7{font-weight:700;}
+.totbar{margin-top:14px;display:flex;gap:20px;flex-wrap:wrap;}
+.totbar .ti span:first-child{font-size:12px;color:var(--text2);}
+.totbar .tv{font-size:16px;font-weight:700;}
+
+/* TX PAGE */
+.tx-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.tx-btn{flex:1;min-width:110px;padding:14px 10px;border:none;border-radius:14px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.tx-btn .tbi{font-size:24px;}
+.tx-btn.inc{background:rgba(76,175,125,.15);border:1px solid rgba(76,175,125,.3);color:var(--green);}
+.tx-btn.exp{background:rgba(224,85,85,.15);border:1px solid rgba(224,85,85,.3);color:var(--red);}
+.tx-btn.trf{background:rgba(0,168,150,.15);border:1px solid rgba(0,168,150,.3);color:var(--gold);}
+.tx-btn:hover{transform:translateY(-2px);filter:brightness(1.15);}
+.tx-sum{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;}
+.tx-sc{flex:1;min-width:110px;background:var(--card);border:1px solid var(--border);border-radius:11px;padding:11px 14px;}
+.tx-sc .tsl{font-size:10px;color:var(--text2);margin-bottom:3px;}
+.tx-sc .tsv{font-size:17px;font-weight:800;}
+.tx-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.tx-fb{padding:5px 12px;border:1px solid var(--border);background:none;border-radius:20px;color:var(--text2);font-family:'Cairo',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;}
+.tx-fb:hover{border-color:var(--gold);color:var(--gold);}
+.tx-fb.active{background:var(--gold);color:#fff;border-color:var(--gold);font-weight:700;}
+.tx-list{display:flex;flex-direction:column;gap:7px;}
+.tx-item{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px 16px;display:flex;align-items:center;gap:12px;transition:border-color .2s;}
+.tx-item:hover{border-color:var(--gold-dark);}
+.tx-ico{font-size:20px;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tx-ico.inc{background:rgba(76,175,125,.15);}
+.tx-ico.exp{background:rgba(224,85,85,.15);}
+.tx-ico.trf{background:rgba(0,168,150,.15);}
+.tx-body{flex:1;min-width:0;}
+.tx-desc{font-size:13px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tx-meta{font-size:11px;color:var(--text2);display:flex;gap:7px;flex-wrap:wrap;}
+.tx-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;}
+.tx-amt{font-size:16px;font-weight:900;}
+.tx-amt.inc{color:var(--green);}
+.tx-amt.exp{color:var(--red);}
+.tx-amt.trf{color:var(--gold);}
+.tx-dh{font-size:11px;color:var(--text3);padding:10px 0 5px;font-weight:700;}
+.tx-empty{text-align:center;padding:44px 20px;color:var(--text3);}
+
+/* DEBT LINK SECTION */
+.debt-link-box{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:14px;}
+.debt-link-box .dlb-title{font-size:12px;color:var(--text2);margin-bottom:8px;}
+.debt-link-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.debt-badge{padding:5px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px;cursor:pointer;transition:all .15s;background:var(--bg2);color:var(--text2);}
+.debt-badge:hover{border-color:var(--gold);color:var(--gold);}
+.debt-badge.selected{border-color:var(--gold);background:rgba(0,168,150,.15);color:var(--gold);font-weight:700;}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .main{padding:14px;}.header{padding:10px 14px;}.nw-amount{font-size:30px;}
+  .fr{grid-template-columns:1fr;}.rate-item:nth-child(n+3){display:none;}
+  .tbl-wrap th:nth-child(n+5),.tbl-wrap td:nth-child(n+5){display:none;}
+  .amount-wrap .fc{padding-left:60px;}
+}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-dark);}
+
+/* SEARCH */
+.search-wrap{position:relative;display:flex;align-items:center;}
+.search-input{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:7px 36px 7px 12px;color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;width:200px;transition:all .2s;direction:rtl;}
+.search-input:focus{border-color:var(--gold);width:260px;}
+.search-input::placeholder{color:var(--text3);}
+.search-icon{position:absolute;right:10px;font-size:14px;color:var(--text3);pointer-events:none;}
+.search-results{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--bg2);border:1px solid var(--border);border-radius:12px;width:320px;max-height:320px;overflow-y:auto;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.search-results.open{display:block;}
+.sr-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(49,58,77,.4);transition:background .15s;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.sr-item:last-child{border-bottom:none;}
+.sr-item:hover{background:rgba(0,168,150,.07);}
+.sr-name{font-size:13px;font-weight:600;}
+.sr-meta{font-size:11px;color:var(--text2);}
+.sr-val{font-size:13px;font-weight:700;color:var(--gold);white-space:nowrap;}
+.sr-empty{padding:18px;text-align:center;color:var(--text3);font-size:13px;}
+
+/* DEBT REMINDERS */
+.remind-box{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;}
+.remind-hdr{padding:12px 16px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:13px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:6px;}
+.remind-item{padding:12px 16px;border-bottom:1px solid rgba(49,58,77,.4);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.remind-item:last-child{border-bottom:none;}
+.remind-left .rn{font-size:13px;font-weight:700;}
+.remind-left .rd{font-size:11px;color:var(--text2);margin-top:2px;}
+.remind-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;white-space:nowrap;}
+.rb-urgent{background:rgba(224,85,85,.15);color:var(--red);}
+.rb-soon{background:rgba(247,148,29,.15);color:var(--accent);}
+.rb-ok{background:rgba(76,175,125,.15);color:var(--green);}
+
+/* ══ SETTINGS PAGE ══ */
+.settings-section{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:18px;}
+.settings-hdr{padding:14px 18px;background:var(--bg3);font-size:14px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.settings-row{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(49,58,77,.4);}
+.settings-row:last-child{border-bottom:none;}
+.sr-info .sr-title{font-size:13px;font-weight:700;margin-bottom:2px;}
+.sr-info .sr-desc{font-size:11px;color:var(--text2);}
+
+/* TOGGLE SWITCH */
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.2s;}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;right:3px;top:3px;background:var(--text2);border-radius:50%;transition:.2s;}
+.toggle input:checked+.toggle-slider{background:var(--gold);}
+.toggle input:checked+.toggle-slider:before{right:23px;background:#fff;}
+
+/* PIN SCREEN */
+.pin-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;}
+.pin-logo{font-size:48px;margin-bottom:8px;}
+.pin-title{font-family:'Cairo',sans-serif;font-weight:800;font-size:28px;color:var(--gold);}
+.pin-sub{font-size:13px;color:var(--text2);}
+.pin-dots{display:flex;gap:14px;margin:8px 0;}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);background:none;transition:all .15s;}
+.pin-dot.filled{background:var(--gold);border-color:var(--gold);}
+.pin-dot.error{background:var(--red);border-color:var(--red);}
+.pin-pad{display:grid;grid-template-columns:repeat(3,72px);gap:10px;}
+.pin-key{width:72px;height:72px;background:var(--card);border:1px solid var(--border);border-radius:16px;font-family:'Cairo',sans-serif;font-size:22px;font-weight:700;color:var(--text);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.pin-key:hover{border-color:var(--gold);color:var(--gold);}
+.pin-key:active{transform:scale(.93);}
+.pin-key.del{font-size:18px;}
+.pin-err{font-size:13px;color:var(--red);min-height:18px;}
+
+/* SETTINGS INPUT */
+.settings-input{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:8px 12px;color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;transition:border-color .2s;direction:rtl;width:200px;}
+.settings-input:focus{border-color:var(--gold);}
+.btn-sm-outline{padding:6px 14px;border:1px solid var(--border);background:none;border-radius:8px;color:var(--text2);font-family:'Cairo',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-sm-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-sm-danger{padding:6px 14px;border:1px solid rgba(224,85,85,.3);background:rgba(224,85,85,.1);border-radius:8px;color:var(--red);font-family:'Cairo',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-sm-danger:hover{background:rgba(224,85,85,.2);}
+
+.month-nav{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.month-nav button{padding:5px 12px;border:1px solid var(--border);background:none;border-radius:20px;color:var(--text2);font-family:'Cairo',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;}
+.month-nav button:hover{border-color:var(--gold);color:var(--gold);}
+.month-nav .mn-cur{font-size:14px;font-weight:700;color:var(--text);min-width:140px;text-align:center;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<div class="header">
+  <div class="header-title">
+    <div class="logo-icon">💰</div>
+    <div><h1>حسابي</h1><small>إدارة الثروة الشخصية</small></div>
+  </div>
+  <div class="header-right">
+    <div class="search-wrap" id="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="search-input" placeholder="بحث..." oninput="doSearch(this.value)" onblur="setTimeout(()=>closeSearch(),200)"/>
+      <div class="search-results" id="search-results"></div>
+    </div>
+    <button class="btn-eye" id="btn-eye" onclick="toggleNums()" title="إخفاء/إظهار الأرقام">👁️</button>
+    <button class="btn-drive" onclick="backupToDrive()" title="حفظ نسخة احتياطية على Google Drive">
+      <svg width="16" height="16" viewBox="0 0 87.3 78" style="vertical-align:middle;margin-left:5px;"><path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L1.2 48.4c-.8 1.4-1.2 2.95-1.2 4.5h27.45z" fill="#00ac47"/><path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.85L73.55 76.8z" fill="#ea4335"/><path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.95 0H34.35c-1.55 0-3.1.45-4.45 1.2z" fill="#00832d"/><path d="M59.85 52.9H27.45L13.7 76.7c1.35.8 2.9 1.25 4.45 1.25h50c1.55 0 3.1-.45 4.45-1.2z" fill="#2684fc"/><path d="M73.4 26.45l-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25l16.2 27.9H87.3c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
+      حفظ على Drive
+    </button>
+    <label class="btn-hdr" title="استيراد نسخة احتياطية" style="cursor:pointer;">
+      📥<input type="file" accept=".json" onchange="importData(event)" style="display:none;"/>
+    </label>
+    <div class="rate-widget">
+      <div class="rate-row">
+        <span style="font-size:11px;color:var(--text2);">أسعار اليوم</span>
+        <span class="rate-sep">|</span>
+        <div class="rate-item"><span class="rl">🥇 ذهب 21K</span><span class="rv" id="gp-21">—</span></div>
+        <div class="rate-item"><span class="rl">24K</span><span class="rv" id="gp-24">—</span></div>
+        <span class="rate-sep">|</span>
+        <div class="rate-item"><span class="rl">💵 الدولار</span><span class="rv" id="usd-rate">—</span></div>
+        <span style="font-size:10px;color:var(--text3);">ج.م</span>
+      </div>
+      <div id="rate-status" class="rate-status loading"><span class="spin">⟳</span> جاري التحميل...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ NAV ═══════════════════════ -->
+<div class="nav">
+  <button class="nav-btn active" id="nav-dashboard" onclick="showPage('dashboard',this)">📊 لوحة التحكم</button>
+  <button class="nav-btn" id="nav-transactions" onclick="showPage('transactions',this)">📋 الحركات اليومية</button>
+  <button class="nav-btn" id="nav-settings" onclick="showPage('settings',this)" style="margin-right:auto;">⚙️ الإعدادات</button>
+
+  <div class="nav-dropdown">
+    <button class="nav-dropdown-btn" id="nav-dropdown-btn">
+      📂 الأصول والديون <span class="arrow">▾</span>
+    </button>
+    <div class="dropdown-menu">
+      <button class="dropdown-item" id="nav-cash"         onclick="showPage('cash',this)">💵 النقدي</button>
+      <button class="dropdown-item" id="nav-gold"         onclick="showPage('gold',this)">🥇 الذهب</button>
+      <button class="dropdown-item" id="nav-property"     onclick="showPage('property',this)">🏠 العقارات</button>
+      <button class="dropdown-item" id="nav-other"        onclick="showPage('other',this)">📦 أصول أخرى</button>
+      <button class="dropdown-item" id="nav-debts-on-me"  onclick="showPage('debts-on-me',this)">🔴 ديون عليّ</button>
+      <button class="dropdown-item" id="nav-debts-for-me" onclick="showPage('debts-for-me',this)">🟢 ديون لي</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="page active" id="page-dashboard">
+  <div class="nw-card">
+    <div class="nw-label">صافي الثروة</div>
+    <div class="nw-amount sensitive" id="dash-net">0</div>
+    <div class="nw-sub">جنيه مصري</div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card gold"><div class="si">💰</div><div class="sl">إجمالي الأصول</div><div class="sv sensitive" id="dash-assets">0</div></div>
+    <div class="stat-card green"><div class="si">🟢</div><div class="sl">ديون لي</div><div class="sv sensitive" id="dash-for-me">0</div></div>
+    <div class="stat-card red"><div class="si">🔴</div><div class="sl">ديون عليّ</div><div class="sv sensitive" id="dash-on-me">0</div></div>
+    <div class="stat-card blue"><div class="si">🥇</div><div class="sl">قيمة الذهب اليوم</div><div class="sv sensitive" id="dash-gold">—</div></div>
+  </div>
+  <div class="section-hdr"><div class="section-ttl">📈 توزيع الأصول</div></div>
+  <div class="tbl-wrap" style="padding:18px;"><div id="dash-chart"><div style="text-align:center;color:var(--text3);padding:18px;">لا توجد أصول بعد</div></div></div>
+  <div id="dash-reminders"></div>
+</div>
+
+<!-- ═══ TRANSACTIONS ═══ -->
+<div class="page" id="page-transactions">
+  <div class="tx-btns">
+    <button class="tx-btn inc" onclick="openTxModal('income')"><span class="tbi">⬆️</span>دخل</button>
+    <button class="tx-btn exp" onclick="openTxModal('expense')"><span class="tbi">⬇️</span>صرف</button>
+    <button class="tx-btn trf" onclick="openTxModal('transfer')"><span class="tbi">🔄</span>تحويل</button>
+  </div>
+  <div class="tx-sum">
+    <div class="tx-sc"><div class="tsl">دخل الشهر</div><div class="tsv sensitive" id="tx-min" style="color:var(--green);">0</div></div>
+    <div class="tx-sc"><div class="tsl">صرف الشهر</div><div class="tsv sensitive" id="tx-mex" style="color:var(--red);">0</div></div>
+    <div class="tx-sc"><div class="tsl">صافي الشهر</div><div class="tsv sensitive" id="tx-mnet">0</div></div>
+  </div>
+  <div class="month-nav">
+    <button onclick="changeMonth(-1)">◀</button>
+    <span class="mn-cur" id="mn-label">—</span>
+    <button onclick="changeMonth(1)">▶</button>
+    <button id="mn-all-btn" onclick="toggleAllMonths(this)" style="margin-right:auto;">عرض الكل</button>
+  </div>
+  <div class="tx-filters">
+    <button class="tx-fb active" onclick="filterTx('all',this)">الكل</button>
+    <button class="tx-fb" onclick="filterTx('income',this)">⬆️ دخل</button>
+    <button class="tx-fb" onclick="filterTx('expense',this)">⬇️ صرف</button>
+    <button class="tx-fb" onclick="filterTx('transfer',this)">🔄 تحويل</button>
+  </div>
+  <div id="tx-container"></div>
+</div>
+
+<!-- ═══ CASH ═══ -->
+<div class="page" id="page-cash">
+  <div class="section-hdr"><div class="section-ttl">💵 أصول نقدية</div><button class="btn btn-gold" onclick="openCashModal()">+ إضافة</button></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>الوصف</th><th>المبلغ</th><th>المكان</th><th>التاريخ</th><th>ملاحظة</th><th></th></tr></thead>
+    <tbody id="cash-tbody"></tbody>
+  </table></div>
+  <div class="totbar"><div class="ti"><span>الإجمالي: </span><span class="tv tg sensitive" id="cash-total">0</span><span class="tm"> ج.م</span></div></div>
+</div>
+
+<!-- ═══ GOLD ═══ -->
+<div class="page" id="page-gold">
+  <div class="section-hdr"><div class="section-ttl">🥇 أصول الذهب</div><button class="btn btn-gold" onclick="openGoldModal()">+ إضافة</button></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>الوصف</th><th>العيار</th><th>الوزن</th><th>سعر الشراء/جم</th><th>تكلفة الشراء</th><th>قيمة اليوم</th><th>الفرق</th><th></th></tr></thead>
+    <tbody id="gold-tbody"></tbody>
+  </table></div>
+  <div class="totbar">
+    <div class="ti"><span>إجمالي الوزن: </span><span class="tv tg" id="gtg">0</span><span class="tm"> جم</span></div>
+    <div class="ti"><span>قيمة اليوم: </span><span class="tv tg sensitive" id="gtv">—</span><span class="tm"> ج.م</span></div>
+    <div class="ti"><span>الفرق: </span><span class="tv sensitive" id="gtp">—</span></div>
+  </div>
+</div>
+
+<!-- ═══ PROPERTY ═══ -->
+<div class="page" id="page-property">
+  <div class="section-hdr"><div class="section-ttl">🏠 العقارات</div><button class="btn btn-gold" onclick="openPropertyModal()">+ إضافة</button></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>الوصف</th><th>النوع</th><th>الموقع</th><th>القيمة</th><th>التاريخ</th><th>ملاحظة</th><th></th></tr></thead>
+    <tbody id="property-tbody"></tbody>
+  </table></div>
+  <div class="totbar"><div class="ti"><span>الإجمالي: </span><span class="tv tg sensitive" id="prop-total">0</span><span class="tm"> ج.م</span></div></div>
+</div>
+
+<!-- ═══ OTHER ═══ -->
+<div class="page" id="page-other">
+  <div class="section-hdr"><div class="section-ttl">📦 أصول أخرى</div><button class="btn btn-gold" onclick="openOtherModal()">+ إضافة</button></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>الوصف</th><th>النوع</th><th>القيمة</th><th>التاريخ</th><th>ملاحظة</th><th></th></tr></thead>
+    <tbody id="other-tbody"></tbody>
+  </table></div>
+  <div class="totbar"><div class="ti"><span>الإجمالي: </span><span class="tv tg sensitive" id="other-total">0</span><span class="tm"> ج.م</span></div></div>
+</div>
+
+<!-- ═══ DEBTS ON ME ═══ -->
+<div class="page" id="page-debts-on-me">
+  <div class="section-hdr"><div class="section-ttl">🔴 ديون عليّ</div><button class="btn btn-gold" onclick="openDOMModal()">+ إضافة</button></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>الدائن</th><th>الكلي</th><th>المسدد</th><th>المتبقي</th><th>التاريخ</th><th>الحالة</th><th></th></tr></thead>
+    <tbody id="dom-tbody"></tbody>
+  </table></div>
+  <div class="totbar">
+    <div class="ti"><span>الإجمالي: </span><span class="tv tr sensitive" id="dom-total">0</span><span class="tm"> ج.م</span></div>
+    <div class="ti"><span>المتبقي: </span><span class="tv tr sensitive" id="dom-rem">0</span><span class="tm"> ج.م</span></div>
+  </div>
+</div>
+
+<!-- ═══ DEBTS FOR ME ═══ -->
+<div class="page" id="page-debts-for-me">
+  <div class="section-hdr"><div class="section-ttl">🟢 ديون لي</div><button class="btn btn-gold" onclick="openDFMModal()">+ إضافة</button></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>المدين</th><th>الكلي</th><th>المسدد</th><th>المتبقي</th><th>التاريخ</th><th>الحالة</th><th></th></tr></thead>
+    <tbody id="dfm-tbody"></tbody>
+  </table></div>
+  <div class="totbar">
+    <div class="ti"><span>الإجمالي: </span><span class="tv tgr sensitive" id="dfm-total">0</span><span class="tm"> ج.م</span></div>
+    <div class="ti"><span>المتبقي: </span><span class="tv tgr sensitive" id="dfm-rem">0</span><span class="tm"> ج.م</span></div>
+  </div>
+</div>
+
+<!-- ═══ SETTINGS ═══ -->
+<div class="page" id="page-settings">
+
+  <!-- ── المميزات ── -->
+  <div class="settings-section">
+    <div class="settings-hdr">⚡ المميزات</div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">البحث السريع</div><div class="sr-desc">حقل البحث في الهيدر</div></div>
+      <label class="toggle"><input type="checkbox" id="cfg-search" onchange="saveCfg();applyFeatures()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">تذكير الديون</div><div class="sr-desc">يظهر في لوحة التحكم</div></div>
+      <label class="toggle"><input type="checkbox" id="cfg-reminders" onchange="saveCfg();renderAll()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">العملة الافتراضية</div><div class="sr-desc">عند فتح أي نافذة إضافة</div></div>
+      <select class="settings-input" id="cfg-cur" onchange="saveCfg()" style="width:100px;">
+        <option value="EGP">ج.م</option>
+        <option value="USD">دولار $</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ── إخفاء الصفحات ── -->
+  <div class="settings-section">
+    <div class="settings-hdr">📂 الصفحات المرئية في القائمة</div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">💵 النقدي</div></div>
+      <label class="toggle"><input type="checkbox" id="cfg-show-cash" onchange="saveCfg();applyFeatures()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">🥇 الذهب</div></div>
+      <label class="toggle"><input type="checkbox" id="cfg-show-gold" onchange="saveCfg();applyFeatures()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">🏠 العقارات</div></div>
+      <label class="toggle"><input type="checkbox" id="cfg-show-prop" onchange="saveCfg();applyFeatures()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">📦 أصول أخرى</div></div>
+      <label class="toggle"><input type="checkbox" id="cfg-show-other" onchange="saveCfg();applyFeatures()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">🔴 ديون عليّ</div></div>
+      <label class="toggle"><input type="checkbox" id="cfg-show-dom" onchange="saveCfg();applyFeatures()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">🟢 ديون لي</div></div>
+      <label class="toggle"><input type="checkbox" id="cfg-show-dfm" onchange="saveCfg();applyFeatures()"><span class="toggle-slider"></span></label>
+    </div>
+  </div>
+
+  <!-- ── الأمان ── -->
+  <div class="settings-section">
+    <div class="settings-hdr">🔐 الأمان</div>
+    <div class="settings-row" id="bio-settings-row">
+      <div class="sr-info">
+        <div class="sr-title">البصمة / Face ID</div>
+        <div class="sr-desc" id="bio-status-text">غير مفعّلة</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-sm-outline" id="btn-enable-bio" onclick="enrollBiometric()">تفعيل البصمة</button>
+        <button class="btn-sm-danger" id="btn-disable-bio" style="display:none;" onclick="disableBiometric()">إلغاء</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info">
+        <div class="sr-title">PIN لفتح النظام</div>
+        <div class="sr-desc" id="pin-status-text">غير مفعّل</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-sm-outline" id="btn-set-pin" onclick="openPinSetup()">تفعيل PIN</button>
+        <button class="btn-sm-danger"  id="btn-remove-pin" style="display:none;" onclick="removePin()">إلغاء</button>
+        <button class="btn-sm-outline" id="btn-change-pin" style="display:none;" onclick="openPinChange()">تغيير</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── البيانات ── -->
+  <div class="settings-section">
+    <div class="settings-hdr">🗄️ البيانات</div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">تصدير نسخة احتياطية</div><div class="sr-desc">ملف JSON على جهازك</div></div>
+      <button class="btn-sm-outline" onclick="exportData()">📤 تصدير</button>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">استيراد نسخة احتياطية</div><div class="sr-desc">استرجاع بيانات محفوظة</div></div>
+      <label class="btn-sm-outline" style="cursor:pointer;">📥 استيراد<input type="file" accept=".json" onchange="importData(event)" style="display:none;"/></label>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info">
+        <div class="sr-title" style="color:var(--red);">إعادة تعيين كل البيانات</div>
+        <div class="sr-desc">يتطلب إدخال الـ PIN إذا كان مفعّلاً</div>
+      </div>
+      <button class="btn-sm-danger" onclick="resetAllData()">🗑️ مسح الكل</button>
+    </div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">آخر نسخة احتياطية</div></div>
+      <span style="font-size:12px;color:var(--text2);" id="last-backup-date">—</span>
+    </div>
+  </div>
+
+  <!-- ── عن النظام ── -->
+  <div class="settings-section">
+    <div class="settings-hdr">ℹ️ عن النظام</div>
+    <div class="settings-row">
+      <div class="sr-info"><div class="sr-title">الإصدار</div></div>
+      <span style="font-size:13px;color:var(--text2);">حسابي v3.2</span>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- end main -->
+
+<!-- PIN SCREEN -->
+<div class="pin-screen" id="pin-screen" style="display:none;">
+
+  <!-- MAIN AUTH VIEW -->
+  <div id="pin-main-view" style="display:flex;flex-direction:column;align-items:center;">
+
+    <div style="font-size:52px;margin-bottom:4px;">🔐</div>
+    <div class="pin-title">حسابي</div>
+    <div class="pin-sub" id="pin-screen-sub" style="margin-bottom:20px;text-align:center;">مرحباً بك</div>
+
+    <!-- BIOMETRIC BUTTON -->
+    <div id="biometric-section" style="display:none;flex-direction:column;align-items:center;gap:12px;margin-bottom:20px;">
+      <button id="bio-btn" onclick="triggerBiometric()" style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;font-size:40px;cursor:pointer;box-shadow:0 4px 24px rgba(0,168,150,.4);transition:transform .15s;display:flex;align-items:center;justify-content:center;">👆</button>
+      <div style="font-size:12px;color:var(--text2);" id="bio-label">المس للدخول</div>
+      <div class="pin-err" id="bio-err"></div>
+      <button onclick="showPinFallback()" style="background:none;border:none;color:var(--text3);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text3)'">🔢 الدخول بالـ PIN بدلاً منها</button>
+    </div>
+
+    <!-- PIN INPUT -->
+    <div id="pin-section" style="display:none;flex-direction:column;align-items:center;">
+      <div class="pin-dots" id="pin-dots" style="margin-bottom:6px;">
+        <div class="pin-dot" id="pd0"></div>
+        <div class="pin-dot" id="pd1"></div>
+        <div class="pin-dot" id="pd2"></div>
+        <div class="pin-dot" id="pd3"></div>
+      </div>
+      <div class="pin-err" id="pin-err" style="margin-bottom:8px;"></div>
+      <div class="pin-pad">
+        <button class="pin-key" onclick="pinKey('1')">1</button>
+        <button class="pin-key" onclick="pinKey('2')">2</button>
+        <button class="pin-key" onclick="pinKey('3')">3</button>
+        <button class="pin-key" onclick="pinKey('4')">4</button>
+        <button class="pin-key" onclick="pinKey('5')">5</button>
+        <button class="pin-key" onclick="pinKey('6')">6</button>
+        <button class="pin-key" onclick="pinKey('7')">7</button>
+        <button class="pin-key" onclick="pinKey('8')">8</button>
+        <button class="pin-key" onclick="pinKey('9')">9</button>
+        <button class="pin-key" onclick="pinKey('F')" style="font-size:12px;">نسيت</button>
+        <button class="pin-key" onclick="pinKey('0')">0</button>
+        <button class="pin-key del" onclick="pinKey('DEL')">⌫</button>
+      </div>
+      <button id="back-to-bio-btn" onclick="showBiometricSection()" style="display:none;margin-top:14px;background:none;border:none;color:var(--text3);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer;padding:4px 8px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text3)'">👆 العودة للبصمة</button>
+    </div>
+
+  </div>
+
+  <!-- RECOVERY VIEW (shown when نسيت pressed) -->
+  <div id="pin-recovery-view" style="display:none;width:100%;max-width:360px;padding:0 20px;text-align:center;">
+    <div style="font-size:36px;margin-bottom:8px;">🔑</div>
+    <div style="font-family:'Cairo',sans-serif;font-weight:800;font-size:22px;color:var(--gold);margin-bottom:6px;">استعادة الـ PIN</div>
+
+    <!-- Step 1: answer security question -->
+    <div id="rv-step1">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;" id="rv-question"></div>
+      <input type="text" id="rv-answer" placeholder="إجابتك..." style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:Cairo,sans-serif;font-size:14px;outline:none;direction:rtl;margin-bottom:8px;" oninput="document.getElementById('rv-err').textContent=''"/>
+      <div class="pin-err" id="rv-err" style="margin-bottom:10px;"></div>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button onclick="checkRVAnswer()" style="padding:10px 24px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;border-radius:9px;color:#1a1400;font-family:Cairo,sans-serif;font-size:14px;font-weight:700;cursor:pointer;">تحقق ✅</button>
+        <button onclick="closeRecovery()" style="padding:10px 20px;background:none;border:1px solid var(--border);border-radius:9px;color:var(--text2);font-family:Cairo,sans-serif;font-size:14px;cursor:pointer;">إلغاء</button>
+      </div>
+    </div>
+
+    <!-- Step 2: enter new PIN -->
+    <div id="rv-step2" style="display:none;">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:12px;" id="rv-new-sub">أدخل PIN جديد</div>
+      <div class="pin-dots" style="justify-content:center;margin-bottom:8px;">
+        <div class="pin-dot" id="rvd0"></div><div class="pin-dot" id="rvd1"></div>
+        <div class="pin-dot" id="rvd2"></div><div class="pin-dot" id="rvd3"></div>
+      </div>
+      <div class="pin-err" id="rv-pin-err" style="margin-bottom:10px;"></div>
+      <div class="pin-pad" style="margin:0 auto;">
+        <button class="pin-key" onclick="rvNewKey('1')">1</button>
+        <button class="pin-key" onclick="rvNewKey('2')">2</button>
+        <button class="pin-key" onclick="rvNewKey('3')">3</button>
+        <button class="pin-key" onclick="rvNewKey('4')">4</button>
+        <button class="pin-key" onclick="rvNewKey('5')">5</button>
+        <button class="pin-key" onclick="rvNewKey('6')">6</button>
+        <button class="pin-key" onclick="rvNewKey('7')">7</button>
+        <button class="pin-key" onclick="rvNewKey('8')">8</button>
+        <button class="pin-key" onclick="rvNewKey('9')">9</button>
+        <button class="pin-key" onclick="closeRecovery()">رجوع</button>
+        <button class="pin-key" onclick="rvNewKey('0')">0</button>
+        <button class="pin-key del" onclick="rvNewKey('DEL')">⌫</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PIN SETUP MODAL -->
+<div class="modal-overlay" id="modal-pin-setup">
+  <div class="modal" style="max-width:360px;text-align:center;">
+    <div class="modal-title" id="pin-setup-title" style="justify-content:center;">🔐 تفعيل PIN</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;" id="pin-setup-sub">اختر رقم PIN من 4 أرقام</p>
+
+    <!-- PIN input section -->
+    <div id="pin-setup-pad-section">
+      <div class="pin-dots" style="justify-content:center;margin-bottom:8px;">
+        <div class="pin-dot" id="psd0"></div><div class="pin-dot" id="psd1"></div>
+        <div class="pin-dot" id="psd2"></div><div class="pin-dot" id="psd3"></div>
+      </div>
+      <div class="pin-err" id="pin-setup-err" style="margin-bottom:12px;"></div>
+      <div class="pin-pad" style="margin:0 auto 16px;">
+        <button class="pin-key" onclick="pinSetupKey('1')">1</button>
+        <button class="pin-key" onclick="pinSetupKey('2')">2</button>
+        <button class="pin-key" onclick="pinSetupKey('3')">3</button>
+        <button class="pin-key" onclick="pinSetupKey('4')">4</button>
+        <button class="pin-key" onclick="pinSetupKey('5')">5</button>
+        <button class="pin-key" onclick="pinSetupKey('6')">6</button>
+        <button class="pin-key" onclick="pinSetupKey('7')">7</button>
+        <button class="pin-key" onclick="pinSetupKey('8')">8</button>
+        <button class="pin-key" onclick="pinSetupKey('9')">9</button>
+        <button class="pin-key"></button>
+        <button class="pin-key" onclick="pinSetupKey('0')">0</button>
+        <button class="pin-key del" onclick="pinSetupKey('DEL')">⌫</button>
+      </div>
+    </div>
+
+    <!-- Security question section (shown after PIN confirmed) -->
+    <div id="pin-setup-sq-section" style="display:none;text-align:right;">
+      <div class="fg">
+        <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px;">سؤال الاستعادة</label>
+        <select class="fc" id="sq-question" style="direction:rtl;">
+          <option value="اسم أمك قبل الزواج؟">اسم أمك قبل الزواج؟</option>
+          <option value="اسم مدرستك الابتدائية؟">اسم مدرستك الابتدائية؟</option>
+          <option value="اسم أول سيارة؟">اسم أول سيارة؟</option>
+          <option value="اسم أفضل صديق في الطفولة؟">اسم أفضل صديق في الطفولة؟</option>
+          <option value="اسم المدينة التي ولدت فيها؟">اسم المدينة التي ولدت فيها؟</option>
+          <option value="اسم حيوانك الأليف الأول؟">اسم حيوانك الأليف الأول؟</option>
+        </select>
+      </div>
+      <div class="fg" style="margin-top:10px;">
+        <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px;">الإجابة *</label>
+        <input type="text" class="fc" id="sq-answer" placeholder="اكتب إجابتك..." style="direction:rtl;"/>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px;">ستُستخدم لاستعادة الـ PIN إذا نسيته</div>
+      </div>
+      <div class="pin-err" id="sq-err" style="margin:8px 0;text-align:center;"></div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;">
+        <button class="btn btn-gold" onclick="savePinWithSQ()">💾 حفظ</button>
+        <button class="btn btn-outline" onclick="closeModal('modal-pin-setup')">إلغاء</button>
+      </div>
+    </div>
+
+    <div id="pin-setup-cancel-btn">
+      <button class="btn btn-outline" onclick="closeModal('modal-pin-setup')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN RECOVERY MODAL -->
+<div class="modal-overlay" id="modal-pin-recovery">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-title" style="justify-content:center;">🔑 استعادة الـ PIN</div>
+    <div class="info-box" id="recovery-question" style="text-align:center;font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;"></div>
+    <div class="fg">
+      <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px;">إجابتك</label>
+      <input type="text" class="fc" id="recovery-answer" placeholder="اكتب إجابتك..." style="direction:rtl;"/>
+    </div>
+    <div class="pin-err" id="recovery-err" style="margin:8px 0;"></div>
+
+    <!-- New PIN after correct answer -->
+    <div id="recovery-new-pin-section" style="display:none;text-align:center;">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">✅ إجابة صحيحة! أدخل PIN جديد</p>
+      <div class="pin-dots" style="justify-content:center;margin-bottom:8px;">
+        <div class="pin-dot" id="rpnd0"></div><div class="pin-dot" id="rpnd1"></div>
+        <div class="pin-dot" id="rpnd2"></div><div class="pin-dot" id="rpnd3"></div>
+      </div>
+      <div class="pin-err" id="recovery-pin-err" style="margin-bottom:10px;"></div>
+      <div class="pin-pad" style="margin:0 auto 14px;">
+        <button class="pin-key" onclick="recoveryNewPinKey('1')">1</button>
+        <button class="pin-key" onclick="recoveryNewPinKey('2')">2</button>
+        <button class="pin-key" onclick="recoveryNewPinKey('3')">3</button>
+        <button class="pin-key" onclick="recoveryNewPinKey('4')">4</button>
+        <button class="pin-key" onclick="recoveryNewPinKey('5')">5</button>
+        <button class="pin-key" onclick="recoveryNewPinKey('6')">6</button>
+        <button class="pin-key" onclick="recoveryNewPinKey('7')">7</button>
+        <button class="pin-key" onclick="recoveryNewPinKey('8')">8</button>
+        <button class="pin-key" onclick="recoveryNewPinKey('9')">9</button>
+        <button class="pin-key"></button>
+        <button class="pin-key" onclick="recoveryNewPinKey('0')">0</button>
+        <button class="pin-key del" onclick="recoveryNewPinKey('DEL')">⌫</button>
+      </div>
+    </div>
+
+    <div id="recovery-check-btn" style="display:flex;gap:8px;justify-content:center;margin-top:4px;">
+      <button class="btn btn-gold" onclick="checkRecoveryAnswer()">✅ تحقق</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-pin-recovery')">إلغاء</button>
+    </div>
+  </div>
+</div>
+══════════════════════════════════════════════════════════ -->
+
+<!-- CASH -->
+<div class="modal-overlay" id="modal-cash">
+  <div class="modal">
+    <div class="modal-title">💵 إضافة نقدي</div>
+    <div class="fg"><label>الوصف *</label><input type="text" class="fc" id="cash-desc" placeholder="كاش بيت، بنك..."/></div>
+    <div class="fr">
+      <div class="fg"><label>المبلغ *</label>
+        <div class="amount-wrap">
+          <div class="currency-toggle">
+            <button id="cash-cur-egp" class="active" onclick="setCur('cash','EGP')">ج.م</button>
+            <button id="cash-cur-usd" onclick="setCur('cash','USD')">$</button>
+          </div>
+          <input type="number" class="fc" id="cash-amount" placeholder="0" min="0" oninput="updateConvert('cash')"/>
+        </div>
+        <div class="converted-hint" id="cash-hint"></div>
+      </div>
+      <div class="fg"><label>المكان</label><select class="fc" id="cash-place"><option>في البيت</option><option>بنك</option><option>محفظة إلكترونية</option><option>أخرى</option></select></div>
+    </div>
+    <div class="fg"><label>ملاحظة</label><textarea class="fc" id="cash-note"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-gold" onclick="saveCash()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModal('modal-cash')">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- GOLD -->
+<div class="modal-overlay" id="modal-gold">
+  <div class="modal">
+    <div class="modal-title">🥇 إضافة ذهب</div>
+    <div class="info-box">اليوم: <span class="ib-val" id="gmp-24">—</span>(24K) | <span class="ib-val" id="gmp-21">—</span>(21K) | <span class="ib-val" id="gmp-18">—</span>(18K) ج.م/جم</div>
+    <div class="fg"><label>الوصف *</label><input type="text" class="fc" id="gold-desc" placeholder="خاتم، سبيكة..."/></div>
+    <div class="fr">
+      <div class="fg"><label>النوع</label><select class="fc" id="gold-type"><option>اكسسوار</option><option>سبيكة</option><option>عملة</option><option>أخرى</option></select></div>
+      <div class="fg"><label>العيار</label><select class="fc" id="gold-karat" onchange="calcGoldPrev()"><option value="24">24K</option><option value="21" selected>21K</option><option value="18">18K</option><option value="14">14K</option><option value="10">10K</option></select></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>الوزن (جم) *</label><input type="number" class="fc" id="gold-grams" placeholder="0" min="0" step="0.01" oninput="calcGoldPrev()"/></div>
+      <div class="fg"><label>سعر الشراء/جم *</label>
+        <div class="amount-wrap">
+          <div class="currency-toggle">
+            <button id="gold-cur-egp" class="active" onclick="setCur('gold','EGP')">ج.م</button>
+            <button id="gold-cur-usd" onclick="setCur('gold','USD')">$</button>
+          </div>
+          <input type="number" class="fc" id="gold-buy-price" placeholder="0" min="0" oninput="calcGoldPrev();updateConvert('gold')"/>
+        </div>
+        <div class="converted-hint" id="gold-hint"></div>
+      </div>
+    </div>
+    <div class="info-box" id="gold-prev" style="display:none;">
+      تكلفة: <span class="ib-val" id="gpc">0</span> ج.م &nbsp;|&nbsp; اليوم: <span class="ib-val" id="gpt">—</span> ج.م &nbsp;|&nbsp; فرق: <span class="ib-val" id="gpd">—</span> ج.م
+    </div>
+    <div class="fr">
+      <div class="fg"><label>تاريخ الشراء</label><input type="date" class="fc" id="gold-date"/></div>
+      <div class="fg"><label>ملاحظة</label><input type="text" class="fc" id="gold-note" placeholder="اختياري"/></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-gold" onclick="saveGold()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModal('modal-gold')">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- PROPERTY -->
+<div class="modal-overlay" id="modal-property">
+  <div class="modal">
+    <div class="modal-title">🏠 إضافة عقار</div>
+    <div class="fg"><label>الوصف *</label><input type="text" class="fc" id="prop-desc" placeholder="شقة، أرض..."/></div>
+    <div class="fr">
+      <div class="fg"><label>النوع</label><select class="fc" id="prop-type"><option>شقة</option><option>فيلا</option><option>أرض</option><option>محل</option><option>مخزن</option><option>أخرى</option></select></div>
+      <div class="fg"><label>الموقع</label><input type="text" class="fc" id="prop-loc" placeholder="المدينة / الحي"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>القيمة *</label>
+        <div class="amount-wrap">
+          <div class="currency-toggle">
+            <button id="prop-cur-egp" class="active" onclick="setCur('prop','EGP')">ج.م</button>
+            <button id="prop-cur-usd" onclick="setCur('prop','USD')">$</button>
+          </div>
+          <input type="number" class="fc" id="prop-value" placeholder="0" min="0" oninput="updateConvert('prop')"/>
+        </div>
+        <div class="converted-hint" id="prop-hint"></div>
+      </div>
+      <div class="fg"><label>التاريخ</label><input type="date" class="fc" id="prop-date"/></div>
+    </div>
+    <div class="fg"><label>ملاحظة</label><textarea class="fc" id="prop-note"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-gold" onclick="saveProperty()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModal('modal-property')">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- OTHER -->
+<div class="modal-overlay" id="modal-other">
+  <div class="modal">
+    <div class="modal-title">📦 إضافة أصل آخر</div>
+    <div class="fg"><label>الوصف *</label><input type="text" class="fc" id="other-desc" placeholder="سيارة، بضاعة..."/></div>
+    <div class="fr">
+      <div class="fg"><label>النوع</label><select class="fc" id="other-type"><option>سيارة</option><option>بضاعة</option><option>معدات</option><option>أسهم</option><option>أخرى</option></select></div>
+      <div class="fg"><label>القيمة *</label>
+        <div class="amount-wrap">
+          <div class="currency-toggle">
+            <button id="other-cur-egp" class="active" onclick="setCur('other','EGP')">ج.م</button>
+            <button id="other-cur-usd" onclick="setCur('other','USD')">$</button>
+          </div>
+          <input type="number" class="fc" id="other-value" placeholder="0" min="0" oninput="updateConvert('other')"/>
+        </div>
+        <div class="converted-hint" id="other-hint"></div>
+      </div>
+    </div>
+    <div class="fg"><label>ملاحظة</label><textarea class="fc" id="other-note"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-gold" onclick="saveOther()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModal('modal-other')">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- DEBT ON ME -->
+<div class="modal-overlay" id="modal-dom">
+  <div class="modal">
+    <div class="modal-title">🔴 دين عليّ</div>
+    <div class="fg"><label>الدائن *</label><input type="text" class="fc" id="dom-name" placeholder="من أخذت منه"/></div>
+    <div class="fr">
+      <div class="fg"><label>المبلغ *</label>
+        <div class="amount-wrap">
+          <div class="currency-toggle">
+            <button id="dom-cur-egp" class="active" onclick="setCur('dom','EGP')">ج.م</button>
+            <button id="dom-cur-usd" onclick="setCur('dom','USD')">$</button>
+          </div>
+          <input type="number" class="fc" id="dom-amount" placeholder="0" min="0" oninput="updateConvert('dom')"/>
+        </div>
+        <div class="converted-hint" id="dom-hint"></div>
+      </div>
+      <div class="fg"><label>التاريخ</label><input type="date" class="fc" id="dom-date"/></div>
+    </div>
+    <div class="fg"><label>ملاحظة</label><textarea class="fc" id="dom-note" rows="2"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-gold" onclick="saveDOM()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModal('modal-dom')">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- DEBT FOR ME -->
+<div class="modal-overlay" id="modal-dfm">
+  <div class="modal">
+    <div class="modal-title">🟢 دين لي</div>
+    <div class="fg"><label>المدين *</label><input type="text" class="fc" id="dfm-name" placeholder="من أعطيته"/></div>
+    <div class="fr">
+      <div class="fg"><label>المبلغ *</label>
+        <div class="amount-wrap">
+          <div class="currency-toggle">
+            <button id="dfm-cur-egp" class="active" onclick="setCur('dfm','EGP')">ج.م</button>
+            <button id="dfm-cur-usd" onclick="setCur('dfm','USD')">$</button>
+          </div>
+          <input type="number" class="fc" id="dfm-amount" placeholder="0" min="0" oninput="updateConvert('dfm')"/>
+        </div>
+        <div class="converted-hint" id="dfm-hint"></div>
+      </div>
+      <div class="fg"><label>التاريخ</label><input type="date" class="fc" id="dfm-date"/></div>
+    </div>
+    <div class="fg"><label>ملاحظة</label><textarea class="fc" id="dfm-note" rows="2"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-gold" onclick="saveDFM()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModal('modal-dfm')">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- PAYMENT -->
+<div class="modal-overlay" id="modal-payment">
+  <div class="modal">
+    <div class="modal-title" id="pay-title">💳 تسجيل دفعة</div>
+    <div id="pay-list"></div>
+    <div class="fg"><label>المبلغ *</label>
+      <div class="amount-wrap">
+        <div class="currency-toggle">
+          <button id="pay-cur-egp" class="active" onclick="setCur('pay','EGP')">ج.م</button>
+          <button id="pay-cur-usd" onclick="setCur('pay','USD')">$</button>
+        </div>
+        <input type="number" class="fc" id="pay-amount" placeholder="0" min="0" oninput="updateConvert('pay')"/>
+      </div>
+      <div class="converted-hint" id="pay-hint"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>التاريخ</label><input type="date" class="fc" id="pay-date"/></div>
+      <div class="fg"><label>ملاحظة</label><input type="text" class="fc" id="pay-note" placeholder="اختياري"/></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-gold" onclick="savePayment()">💾 تسجيل</button><button class="btn btn-outline" onclick="closeModal('modal-payment')">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- TRANSACTION -->
+<div class="modal-overlay" id="modal-tx">
+  <div class="modal">
+    <div class="modal-title" id="tx-title">⬆️ إضافة دخل</div>
+    <input type="hidden" id="tx-type" value="income"/>
+    <div class="fg"><label>الوصف *</label><input type="text" class="fc" id="tx-desc" placeholder="مرتب، مصروف بيت..."/></div>
+    <div class="fr">
+      <div class="fg"><label>المبلغ *</label>
+        <div class="amount-wrap">
+          <div class="currency-toggle">
+            <button id="tx-cur-egp" class="active" onclick="setCur('tx','EGP')">ج.م</button>
+            <button id="tx-cur-usd" onclick="setCur('tx','USD')">$</button>
+          </div>
+          <input type="number" class="fc" id="tx-amount" placeholder="0" min="0" oninput="updateConvert('tx')"/>
+        </div>
+        <div class="converted-hint" id="tx-hint"></div>
+      </div>
+      <div class="fg"><label>التاريخ</label><input type="date" class="fc" id="tx-date"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>الفئة</label><select class="fc" id="tx-cat"><option>عام</option></select></div>
+      <div class="fg"><label>مصدر/وجهة</label><input type="text" class="fc" id="tx-party" placeholder="اختياري"/></div>
+    </div>
+    <!-- DEBT LINK -->
+    <div class="debt-link-box" id="tx-debt-box">
+      <div class="dlb-title" id="tx-debt-label">🔗 ربط بدين (اختياري) — تحصيل دين أو تسليم سلفة</div>
+      <div class="debt-link-row" id="tx-debt-list"><span style="color:var(--text3);font-size:12px;">لا توجد ديون</span></div>
+    </div>
+    <div class="fg"><label>ملاحظة</label><textarea class="fc" id="tx-note" rows="2"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-gold" onclick="saveTx()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModal('modal-tx')">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SCRIPT
+══════════════════════════════════════════════════════════ -->
+<!-- RESET CONFIRM MODAL -->
+<div class="modal-overlay" id="modal-reset-confirm">
+  <div class="modal" style="max-width:340px;text-align:center;">
+    <div class="modal-title" style="justify-content:center;color:var(--red);">🗑️ تأكيد مسح البيانات</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;">أدخل الـ PIN لتأكيد حذف كل البيانات نهائياً</p>
+    <div class="pin-dots" style="justify-content:center;margin-bottom:8px;">
+      <div class="pin-dot" id="rpd0"></div><div class="pin-dot" id="rpd1"></div>
+      <div class="pin-dot" id="rpd2"></div><div class="pin-dot" id="rpd3"></div>
+    </div>
+    <div class="pin-err" id="reset-pin-err" style="margin-bottom:12px;"></div>
+    <div class="pin-pad" style="margin:0 auto 16px;">
+      <button class="pin-key" onclick="resetPinKey('1')">1</button>
+      <button class="pin-key" onclick="resetPinKey('2')">2</button>
+      <button class="pin-key" onclick="resetPinKey('3')">3</button>
+      <button class="pin-key" onclick="resetPinKey('4')">4</button>
+      <button class="pin-key" onclick="resetPinKey('5')">5</button>
+      <button class="pin-key" onclick="resetPinKey('6')">6</button>
+      <button class="pin-key" onclick="resetPinKey('7')">7</button>
+      <button class="pin-key" onclick="resetPinKey('8')">8</button>
+      <button class="pin-key" onclick="resetPinKey('9')">9</button>
+      <button class="pin-key"></button>
+      <button class="pin-key" onclick="resetPinKey('0')">0</button>
+      <button class="pin-key del" onclick="resetPinKey('DEL')">⌫</button>
+    </div>
+    <button class="btn btn-outline" onclick="closeModal('modal-reset-confirm')">إلغاء</button>
+  </div>
+</div>
+
+<script>
+// ════ STATE ════
+let D = {cash:[],gold:[],property:[],other:[],debtsOnMe:[],debtsForMe:[],transactions:[]};
+let GP = {24:null,21:null,18:null,14:null,10:null};
+let USD_EGP = null;
+const KARAT = {24:1,21:21/24,18:18/24,14:14/24,10:10/24};
+let curPayType=null, curPayId=null;
+let txFilter='all';
+let txLinkedDebt=null; // {type:'debtsOnMe'|'debtsForMe', id}
+const curState={}; // track USD/EGP per field
+let editId=null; // id of item being edited (null = new)
+let txViewMonth=null; // null = all, else {y,m}
+
+// ════ INIT ════
+function init(){
+  loadCFG();
+  const s=localStorage.getItem('hesaby_v3');
+  if(s){ const p=JSON.parse(s); D={transactions:[],debtsOnMe:[],debtsForMe:[],...p}; }
+  const t=today();
+  ['gold-date','prop-date','dom-date','dfm-date','pay-date','tx-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=t;});
+  if(localStorage.getItem('hesaby_hide')==='1'){document.body.classList.add('nums-hidden');document.getElementById('btn-eye').textContent='🙈';}
+  const now=new Date();
+  txViewMonth={y:now.getFullYear(),m:now.getMonth()};
+  applyFeatures();
+  renderAll();
+  fetchRates();
+  checkPinOnLoad();
+}
+function today(){return new Date().toISOString().split('T')[0];}
+function save(){localStorage.setItem('hesaby_v3',JSON.stringify(D));}
+function fmt(n){return Math.round(n).toLocaleString('ar-EG');}
+function fmtD(n){return n.toLocaleString('ar-EG',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+// ════ EXPORT / IMPORT / DRIVE ════
+function exportData(){
+  const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const d=new Date().toISOString().split('T')[0];
+  a.href=url; a.download=`hesaby-backup-${d}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  return `hesaby-backup-${d}.json`;
+}
+
+function backupToDrive(){
+  // Step 1: download the file
+  const fileName=exportData();
+  // Step 2: show toast with instructions
+  showToast('✅ تم تحميل الملف — ارفعه على Drive الذي فُتح');
+  // Step 3: open Google Drive upload page after short delay
+  setTimeout(()=>{ window.open('https://drive.google.com/drive/my-drive','_blank'); },600);
+}
+
+function importData(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const parsed=JSON.parse(ev.target.result);
+      // validate basic structure
+      if(typeof parsed!=='object'||Array.isArray(parsed)) throw new Error();
+      if(confirm('سيتم استبدال جميع البيانات الحالية بالملف المستورد. متأكد؟')){
+        D={transactions:[],debtsOnMe:[],debtsForMe:[],...parsed};
+        save(); renderAll();
+        showToast('✅ تم الاستيراد بنجاح');
+      }
+    }catch{
+      alert('❌ الملف غير صالح — تأكد إنه ملف نسخة احتياطية من حسابي');
+    }
+    e.target.value=''; // reset input
+  };
+  reader.readAsText(file);
+}
+
+// ════ TOAST ════
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='toast';
+    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--gold-dark);color:var(--text);padding:12px 24px;border-radius:12px;font-family:Cairo,sans-serif;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.5);transition:opacity .3s;';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.style.opacity='0',2500);
+}
+
+// ════ HIDE NUMBERS ════
+function toggleNums(){
+  const h=document.body.classList.toggle('nums-hidden');
+  document.getElementById('btn-eye').textContent=h?'🙈':'👁️';
+  localStorage.setItem('hesaby_hide',h?'1':'0');
+}
+
+// ════ FETCH RATES ════
+async function fetchRates(){
+  const st=document.getElementById('rate-status');
+  st.className='rate-status loading';
+  st.innerHTML='<span class="spin">⟳</span> جاري التحميل...';
+  try{
+    const fxRes=await fetch('https://api.frankfurter.app/latest?from=USD&to=EGP');
+    if(!fxRes.ok) throw new Error();
+    const fx=await fxRes.json();
+    USD_EGP=fx.rates.EGP;
+    const usdEl=document.getElementById('usd-rate');
+    if(usdEl) usdEl.textContent=fmtD(USD_EGP);
+
+    const gRes=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://data-asg.goldprice.org/dbXRates/USD'));
+    if(!gRes.ok) throw new Error();
+    const gRaw=await gRes.json();
+    const gData=JSON.parse(gRaw.contents);
+    const xau=gData.items[0].xauPrice;
+    setGP((xau/31.1035)*USD_EGP);
+    st.className='rate-status ok';
+    st.innerHTML='✓ محدث • '+new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+  }catch{
+    try{
+      const [fxR,yR]=await Promise.all([
+        fetch('https://api.frankfurter.app/latest?from=USD&to=EGP'),
+        fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/GC%3DF?interval=1d&range=1d'))
+      ]);
+      const fx=await fxR.json(); USD_EGP=fx.rates.EGP;
+      const usdEl2=document.getElementById('usd-rate');
+      if(usdEl2) usdEl2.textContent=fmtD(USD_EGP);
+      const yr=await yR.json(); const yd=JSON.parse(yr.contents);
+      setGP((yd.chart.result[0].meta.regularMarketPrice/31.1035)*USD_EGP);
+      st.className='rate-status ok'; st.innerHTML='✓ سعر مباشر';
+    }catch{
+      st.className='rate-status err';
+      st.innerHTML='⚠️ فشل التحميل — انقر للمحاولة';
+      st.onclick=()=>{st.onclick=null;fetchRates();};
+    }
+  }
+  renderAll();
+}
+
+function setGP(g24){
+  for(const k in KARAT) GP[k]=g24*KARAT[k];
+  const f=n=>Math.round(n).toLocaleString('ar-EG');
+  ['24','21','18'].forEach(k=>{
+    const h=document.getElementById('gp-'+k);if(h)h.textContent=f(GP[k]);
+    const m=document.getElementById('gmp-'+k);if(m)m.textContent=f(GP[k]);
+  });
+}
+
+// ════ CURRENCY TOGGLE ════
+function setCur(field, cur){
+  curState[field]=cur;
+  const egpBtn=document.getElementById(field+'-cur-egp');
+  const usdBtn=document.getElementById(field+'-cur-usd');
+  if(egpBtn){egpBtn.classList.toggle('active',cur==='EGP');usdBtn.classList.toggle('active',cur==='USD');}
+  updateConvert(field);
+}
+
+function getEGP(field){
+  const val=parseFloat(document.getElementById(
+    field==='cash'?'cash-amount':field==='gold'?'gold-buy-price':
+    field==='prop'?'prop-value':field==='other'?'other-value':
+    field==='dom'?'dom-amount':field==='dfm'?'dfm-amount':
+    field==='pay'?'pay-amount':'tx-amount'
+  ).value)||0;
+  if(!val) return 0;
+  if(curState[field]==='USD' && USD_EGP) return val*USD_EGP;
+  return val;
+}
+
+function updateConvert(field){
+  const hintEl=document.getElementById(field+'-hint');
+  if(!hintEl) return;
+  const inputId=field==='cash'?'cash-amount':field==='gold'?'gold-buy-price':
+    field==='prop'?'prop-value':field==='other'?'other-value':
+    field==='dom'?'dom-amount':field==='dfm'?'dfm-amount':
+    field==='pay'?'pay-amount':'tx-amount';
+  const val=parseFloat(document.getElementById(inputId).value)||0;
+  if(!val){hintEl.textContent='';return;}
+  if(curState[field]==='USD'){
+    if(USD_EGP) hintEl.innerHTML=`<span style="color:var(--gold);">= ${fmt(val*USD_EGP)} ج.م</span>`;
+    else hintEl.textContent='سعر الدولار لم يُحمَّل بعد';
+  } else {
+    if(USD_EGP) hintEl.innerHTML=`<span style="color:var(--text2);">= ${fmtD(val/USD_EGP)} $</span>`;
+    else hintEl.textContent='';
+  }
+}
+
+// ════ GOLD PREVIEW ════
+function calcGoldPrev(){
+  const grams=parseFloat(document.getElementById('gold-grams').value)||0;
+  const buy=getEGP('gold');
+  const k=parseInt(document.getElementById('gold-karat').value);
+  const prev=document.getElementById('gold-prev');
+  if(!grams&&!buy){prev.style.display='none';return;}
+  prev.style.display='block';
+  const cost=grams*buy;
+  document.getElementById('gpc').textContent=fmt(cost);
+  if(GP[k]&&grams){
+    const tv=grams*GP[k],diff=tv-cost;
+    document.getElementById('gpt').textContent=fmt(tv);
+    const de=document.getElementById('gpd');
+    de.textContent=(diff>=0?'+':'')+fmt(diff);
+    de.style.color=diff>=0?'var(--green)':'var(--red)';
+  } else {
+    document.getElementById('gpt').textContent='—';
+    document.getElementById('gpd').textContent='—';
+  }
+}
+
+// ════ TOTALS ════
+function tCash(){return D.cash.reduce((s,i)=>s+i.amount,0);}
+function tGold(){return D.gold.reduce((s,i)=>s+(GP[i.karat]?i.grams*GP[i.karat]:0),0);}
+function tProp(){return D.property.reduce((s,i)=>s+i.value,0);}
+function tOther(){return D.other.reduce((s,i)=>s+i.value,0);}
+function tAssets(){return tCash()+tGold()+tProp()+tOther();}
+function paid(item){return (item.payments||[]).reduce((s,p)=>s+p.amount,0);}
+function rem(item){return Math.max(0,item.amount-paid(item));}
+function tRemDOM(){return D.debtsOnMe.reduce((s,i)=>s+rem(i),0);}
+function tRemDFM(){return D.debtsForMe.reduce((s,i)=>s+rem(i),0);}
+
+// ════ NAV ════
+const DROP_PAGES=['cash','gold','property','other','debts-on-me','debts-for-me'];
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+
+  // reset top nav btns
+  document.getElementById('nav-dashboard').classList.remove('active');
+  document.getElementById('nav-transactions').classList.remove('active');
+
+  // reset dropdown items
+  document.querySelectorAll('.dropdown-item').forEach(b=>b.classList.remove('active'));
+  const dropBtn=document.getElementById('nav-dropdown-btn');
+
+  if(id==='dashboard'){
+    document.getElementById('nav-dashboard').classList.add('active');
+    dropBtn.classList.remove('has-active');
+  } else if(id==='transactions'){
+    document.getElementById('nav-transactions').classList.add('active');
+    dropBtn.classList.remove('has-active');
+  } else {
+    // it's a dropdown page
+    btn.classList.add('active');
+    dropBtn.classList.add('has-active');
+    // update dropdown button label to show current page
+    const label=btn.textContent.trim();
+    dropBtn.innerHTML=`${label} <span class="arrow">▾</span>`;
+  }
+}
+
+// ════ MODAL ════
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+
+// ════ RENDER ALL ════
+function renderAll(){renderDash();renderCash();renderGold();renderProp();renderOther();renderDOM();renderDFM();renderTx();}
+
+// ════ DASHBOARD ════
+function renderDash(){
+  const assets=tAssets(),forMe=tRemDFM(),onMe=tRemDOM(),net=assets+forMe-onMe,gv=tGold();
+  const el=document.getElementById('dash-net');
+  el.textContent=fmt(net); el.style.color=net>=0?'var(--gold)':'var(--red)';
+  document.getElementById('dash-assets').textContent=fmt(assets);
+  document.getElementById('dash-for-me').textContent=fmt(forMe);
+  document.getElementById('dash-on-me').textContent=fmt(onMe);
+  document.getElementById('dash-gold').textContent=GP[24]?fmt(gv):'—';
+  const cats=[{l:'💵 نقدي',v:tCash(),c:'#5592e0'},{l:'🥇 ذهب',v:gv,c:'#c9a84c'},{l:'🏠 عقار',v:tProp(),c:'#4caf7d'},{l:'📦 أخرى',v:tOther(),c:'#9c6fe0'}].filter(x=>x.v>0);
+  const ch=document.getElementById('dash-chart');
+  if(!cats.length){ch.innerHTML='<div style="text-align:center;color:var(--text3);padding:18px;">لا توجد أصول بعد</div>';return;}
+  const mx=Math.max(...cats.map(x=>x.v));
+  ch.innerHTML=cats.map(c=>`<div class="cbr"><div class="cbl">${c.l}</div><div class="cbb"><div class="cbf" style="width:${c.v/mx*100}%;background:${c.c};">${c.v/mx>0.25?fmt(c.v):''}</div></div><div class="cbv" style="color:${c.c};">${fmt(c.v)} ج.م</div></div>`).join('');
+  renderReminders();
+}
+
+// ════ CASH ════
+function openCashModal(id=null){
+  editId=id;
+  const i=id?D.cash.find(x=>String(x.id)===String(id)):null;
+  document.getElementById('cash-desc').value=i?i.desc:'';
+  document.getElementById('cash-amount').value=i?i.amount:'';
+  document.getElementById('cash-place').value=i?i.place:'في البيت';
+  document.getElementById('cash-note').value=i?i.note:'';
+  document.getElementById('cash-hint').textContent='';
+  setCur('cash','EGP');
+  openModal('modal-cash');
+}
+function saveCash(){
+  const desc=document.getElementById('cash-desc').value.trim();
+  const egp=getEGP('cash');
+  if(!desc||!egp) return alert('الوصف والمبلغ مطلوبان');
+  const raw=parseFloat(document.getElementById('cash-amount').value);
+  const cur=curState['cash']==='USD'?'USD':'EGP';
+  if(editId){
+    const idx=D.cash.findIndex(x=>String(x.id)===String(editId));
+    if(idx>-1) D.cash[idx]={...D.cash[idx],desc,amount:egp,rawAmount:raw,currency:cur,place:document.getElementById('cash-place').value,note:document.getElementById('cash-note').value};
+  } else {
+    D.cash.push({id:Date.now(),desc,amount:egp,rawAmount:raw,currency:cur,place:document.getElementById('cash-place').value,note:document.getElementById('cash-note').value,date:today()});
+  }
+  editId=null;
+  save();renderAll();closeModal('modal-cash');
+  ['cash-desc','cash-amount','cash-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('cash-hint').textContent='';
+}
+function renderCash(){
+  const b=document.getElementById('cash-tbody');
+  if(!D.cash.length){b.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="ei">💵</div><p>لا يوجد أصول نقدية</p></div></td></tr>';document.getElementById('cash-total').textContent='0';return;}
+  b.innerHTML=D.cash.map(i=>`<tr>
+    <td class="fw7">${i.desc}</td>
+    <td class="tg fw7 sensitive">${fmt(i.amount)} ج.م</td>
+    <td><span class="badge bgray">${i.place}</span></td>
+    <td class="tm">${i.date||'-'}</td>
+    <td class="tm">${i.note||'-'}</td>
+    <td style="display:flex;gap:4px;">
+      <button class="btn btn-outline btn-sm" onclick="openCashModal('${i.id}')">✏️</button>
+      <button class="btn btn-danger btn-sm" onclick="del('cash','${i.id}')">🗑️</button>
+    </td>
+  </tr>`).join('');
+  document.getElementById('cash-total').textContent=fmt(tCash());
+}
+
+// ════ GOLD ════
+function openGoldModal(id=null){
+  editId=id;
+  const i=id?D.gold.find(x=>String(x.id)===String(id)):null;
+  document.getElementById('gold-desc').value=i?i.desc:'';
+  document.getElementById('gold-grams').value=i?i.grams:'';
+  document.getElementById('gold-buy-price').value=i?i.buyPrice:'';
+  document.getElementById('gold-type').value=i?i.type:'اكسسوار';
+  document.getElementById('gold-karat').value=i?i.karat:21;
+  document.getElementById('gold-date').value=i?i.date:today();
+  document.getElementById('gold-note').value=i?i.note:'';
+  document.getElementById('gold-prev').style.display='none';
+  document.getElementById('gold-hint').textContent='';
+  setCur('gold','EGP');
+  openModal('modal-gold');
+}
+function saveGold(){
+  const desc=document.getElementById('gold-desc').value.trim();
+  const grams=parseFloat(document.getElementById('gold-grams').value);
+  const buyEGP=getEGP('gold');
+  if(!desc||!grams||!buyEGP) return alert('الوصف والوزن وسعر الشراء مطلوبة');
+  const obj={desc,type:document.getElementById('gold-type').value,karat:parseInt(document.getElementById('gold-karat').value),grams,buyPrice:buyEGP,date:document.getElementById('gold-date').value,note:document.getElementById('gold-note').value};
+  if(editId){
+    const idx=D.gold.findIndex(x=>String(x.id)===String(editId));
+    if(idx>-1) D.gold[idx]={...D.gold[idx],...obj};
+  } else {
+    D.gold.push({id:Date.now(),...obj});
+  }
+  editId=null;
+  save();renderAll();closeModal('modal-gold');
+  ['gold-desc','gold-grams','gold-buy-price','gold-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('gold-prev').style.display='none';
+  document.getElementById('gold-hint').textContent='';
+}
+function renderGold(){
+  const b=document.getElementById('gold-tbody');
+  if(!D.gold.length){
+    b.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="ei">🥇</div><p>لا يوجد ذهب</p></div></td></tr>';
+    ['gtg','gtv','gtp'].forEach(i=>{const e=document.getElementById(i);e.textContent='—';e.style.color='';});
+    document.getElementById('gtg').textContent='0'; return;
+  }
+  let tg=0,tv=0,tp=0,hp=false;
+  b.innerHTML=D.gold.map(i=>{
+    const cost=i.grams*i.buyPrice,tP=GP[i.karat],tv2=tP?i.grams*tP:null,diff=tv2!==null?tv2-cost:null;
+    tg+=i.grams; if(tv2!==null){tv+=tv2;tp+=diff;hp=true;}
+    const dh=diff!==null?`<span style="color:${diff>=0?'var(--green)':'var(--red)'};font-weight:700;">${diff>=0?'+':''}${fmt(diff)} ج.م</span>`:'—';
+    return `<tr>
+      <td class="fw7">${i.desc}</td>
+      <td><span class="badge bg">${i.karat}K • ${i.type}</span></td>
+      <td>${i.grams} جم</td>
+      <td>${fmt(i.buyPrice)} ج.م</td>
+      <td class="sensitive">${fmt(cost)} ج.م</td>
+      <td class="tg fw7 sensitive">${tv2!==null?fmt(tv2)+' ج.م':'—'}</td>
+      <td class="sensitive">${dh}</td>
+      <td style="display:flex;gap:4px;">
+        <button class="btn btn-outline btn-sm" onclick="openGoldModal('${i.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="del('gold','${i.id}')">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById('gtg').textContent=tg.toFixed(2);
+  document.getElementById('gtv').textContent=hp?fmt(tv):'—';
+  const pe=document.getElementById('gtp');
+  if(hp){pe.textContent=(tp>=0?'+':'')+fmt(tp)+' ج.م';pe.style.color=tp>=0?'var(--green)':'var(--red)';}
+  else{pe.textContent='—';pe.style.color='';}
+}
+
+// ════ PROPERTY ════
+function openPropertyModal(id=null){
+  editId=id;
+  const i=id?D.property.find(x=>String(x.id)===String(id)):null;
+  document.getElementById('prop-desc').value=i?i.desc:'';
+  document.getElementById('prop-type').value=i?i.type:'شقة';
+  document.getElementById('prop-loc').value=i?i.location:'';
+  document.getElementById('prop-value').value=i?i.value:'';
+  document.getElementById('prop-date').value=i?i.date:today();
+  document.getElementById('prop-note').value=i?i.note:'';
+  document.getElementById('prop-hint').textContent='';
+  setCur('prop','EGP');
+  openModal('modal-property');
+}
+function saveProperty(){
+  const desc=document.getElementById('prop-desc').value.trim();
+  const egp=getEGP('prop');
+  if(!desc||!egp) return alert('الوصف والقيمة مطلوبان');
+  const raw=parseFloat(document.getElementById('prop-value').value);
+  const cur=curState['prop']==='USD'?'USD':'EGP';
+  const obj={desc,type:document.getElementById('prop-type').value,location:document.getElementById('prop-loc').value,value:egp,rawAmount:raw,currency:cur,date:document.getElementById('prop-date').value,note:document.getElementById('prop-note').value};
+  if(editId){
+    const idx=D.property.findIndex(x=>String(x.id)===String(editId));
+    if(idx>-1) D.property[idx]={...D.property[idx],...obj};
+  } else {
+    D.property.push({id:Date.now(),...obj});
+  }
+  editId=null;
+  save();renderAll();closeModal('modal-property');
+  ['prop-desc','prop-value','prop-loc','prop-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('prop-hint').textContent='';
+}
+function renderProp(){
+  const b=document.getElementById('property-tbody');
+  if(!D.property.length){b.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="ei">🏠</div><p>لا يوجد عقارات</p></div></td></tr>';document.getElementById('prop-total').textContent='0';return;}
+  b.innerHTML=D.property.map(i=>`<tr>
+    <td class="fw7">${i.desc}</td>
+    <td><span class="badge bbl">${i.type}</span></td>
+    <td class="tm">${i.location||'-'}</td>
+    <td class="tg fw7 sensitive">${fmt(i.value)} ج.م</td>
+    <td class="tm">${i.date||'-'}</td>
+    <td class="tm">${i.note||'-'}</td>
+    <td style="display:flex;gap:4px;">
+      <button class="btn btn-outline btn-sm" onclick="openPropertyModal('${i.id}')">✏️</button>
+      <button class="btn btn-danger btn-sm" onclick="del('property','${i.id}')">🗑️</button>
+    </td>
+  </tr>`).join('');
+  document.getElementById('prop-total').textContent=fmt(tProp());
+}
+
+// ════ OTHER ════
+function openOtherModal(id=null){
+  editId=id;
+  const i=id?D.other.find(x=>String(x.id)===String(id)):null;
+  document.getElementById('other-desc').value=i?i.desc:'';
+  document.getElementById('other-type').value=i?i.type:'سيارة';
+  document.getElementById('other-value').value=i?i.value:'';
+  document.getElementById('other-note').value=i?i.note:'';
+  document.getElementById('other-hint').textContent='';
+  setCur('other','EGP');
+  openModal('modal-other');
+}
+function saveOther(){
+  const desc=document.getElementById('other-desc').value.trim();
+  const egp=getEGP('other');
+  if(!desc||!egp) return alert('الوصف والقيمة مطلوبان');
+  const obj={desc,type:document.getElementById('other-type').value,value:egp,note:document.getElementById('other-note').value};
+  if(editId){
+    const idx=D.other.findIndex(x=>String(x.id)===String(editId));
+    if(idx>-1) D.other[idx]={...D.other[idx],...obj};
+  } else {
+    D.other.push({id:Date.now(),...obj,date:today()});
+  }
+  editId=null;
+  save();renderAll();closeModal('modal-other');
+  ['other-desc','other-value','other-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('other-hint').textContent='';
+}
+function renderOther(){
+  const b=document.getElementById('other-tbody');
+  if(!D.other.length){b.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="ei">📦</div><p>لا يوجد</p></div></td></tr>';document.getElementById('other-total').textContent='0';return;}
+  b.innerHTML=D.other.map(i=>`<tr>
+    <td class="fw7">${i.desc}</td>
+    <td><span class="badge bgray">${i.type}</span></td>
+    <td class="tg fw7 sensitive">${fmt(i.value)} ج.م</td>
+    <td class="tm">${i.date||'-'}</td>
+    <td style="display:flex;gap:4px;">
+      <button class="btn btn-outline btn-sm" onclick="openOtherModal('${i.id}')">✏️</button>
+      <button class="btn btn-danger btn-sm" onclick="del('other','${i.id}')">🗑️</button>
+    </td>
+  </tr>`).join('');
+  document.getElementById('other-total').textContent=fmt(tOther());
+}
+
+// ════ DEBTS ════
+function openDOMModal(id=null){
+  editId=id;
+  const i=id?D.debtsOnMe.find(x=>String(x.id)===String(id)):null;
+  document.getElementById('dom-name').value=i?i.name:'';
+  document.getElementById('dom-amount').value=i?i.amount:'';
+  document.getElementById('dom-date').value=i?i.date:today();
+  document.getElementById('dom-note').value=i?i.note:'';
+  document.getElementById('dom-hint').textContent='';
+  setCur('dom','EGP');
+  openModal('modal-dom');
+}
+function saveDOM(){
+  const name=document.getElementById('dom-name').value.trim();
+  const egp=getEGP('dom');
+  if(!name||!egp) return alert('الاسم والمبلغ مطلوبان');
+  const raw=parseFloat(document.getElementById('dom-amount').value);
+  const cur=curState['dom']==='USD'?'USD':'EGP';
+  const obj={name,amount:egp,rawAmount:raw,currency:cur,date:document.getElementById('dom-date').value,note:document.getElementById('dom-note').value};
+  if(editId){
+    const idx=D.debtsOnMe.findIndex(x=>String(x.id)===String(editId));
+    if(idx>-1) D.debtsOnMe[idx]={...D.debtsOnMe[idx],...obj};
+  } else {
+    D.debtsOnMe.push({id:Date.now(),...obj,payments:[]});
+  }
+  editId=null;
+  save();renderAll();closeModal('modal-dom');
+  ['dom-name','dom-amount','dom-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('dom-hint').textContent='';
+}
+
+function openDFMModal(id=null){
+  editId=id;
+  const i=id?D.debtsForMe.find(x=>String(x.id)===String(id)):null;
+  document.getElementById('dfm-name').value=i?i.name:'';
+  document.getElementById('dfm-amount').value=i?i.amount:'';
+  document.getElementById('dfm-date').value=i?i.date:today();
+  document.getElementById('dfm-note').value=i?i.note:'';
+  document.getElementById('dfm-hint').textContent='';
+  setCur('dfm','EGP');
+  openModal('modal-dfm');
+}
+function saveDFM(){
+  const name=document.getElementById('dfm-name').value.trim();
+  const egp=getEGP('dfm');
+  if(!name||!egp) return alert('الاسم والمبلغ مطلوبان');
+  const raw=parseFloat(document.getElementById('dfm-amount').value);
+  const cur=curState['dfm']==='USD'?'USD':'EGP';
+  const obj={name,amount:egp,rawAmount:raw,currency:cur,date:document.getElementById('dfm-date').value,note:document.getElementById('dfm-note').value};
+  if(editId){
+    const idx=D.debtsForMe.findIndex(x=>String(x.id)===String(editId));
+    if(idx>-1) D.debtsForMe[idx]={...D.debtsForMe[idx],...obj};
+  } else {
+    D.debtsForMe.push({id:Date.now(),...obj,payments:[]});
+  }
+  editId=null;
+  save();renderAll();closeModal('modal-dfm');
+  ['dfm-name','dfm-amount','dfm-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('dfm-hint').textContent='';
+}
+
+function renderDebtList(list, tbodyId, totalId, remId, type){
+  const b=document.getElementById(tbodyId);
+  let tot=0,rmt=0;
+  if(!list.length){
+    b.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="ei">${type==='dom'?'🔴':'🟢'}</div><p>لا يوجد ديون</p></div></td></tr>`;
+    document.getElementById(totalId).textContent='0';document.getElementById(remId).textContent='0';return;
+  }
+  b.innerHTML=list.map(i=>{
+    const p=paid(i),r=rem(i),pct=i.amount>0?p/i.amount*100:0;
+    tot+=i.amount;rmt+=r;
+    const st=r===0?`<span class="badge bgr">مسدد ✓</span>`:`<span class="badge ${type==='dom'?'brd':'bbl'}">متبقي ${fmt(r)}</span>`;
+    const dType=type==='dom'?'debtsOnMe':'debtsForMe';
+    return `<tr>
+      <td class="fw7">${i.name}</td>
+      <td class="sensitive">${fmt(i.amount)} ج.م</td>
+      <td class="${type==='dom'?'tgr':'tgr'} sensitive">${fmt(p)} ج.م</td>
+      <td><div class="sensitive">${fmt(r)} ج.م</div><div class="prog"><div class="prog-fill ${type==='dom'?'g':'gld'}" style="width:${pct}%"></div></div></td>
+      <td class="tm">${i.date||'-'}</td>
+      <td>${st}</td>
+      <td style="display:flex;gap:4px;flex-wrap:wrap;">
+        ${r>0?`<button class="btn btn-green btn-sm" onclick="openPay('${dType}','${i.id}')">💳 دفعة</button>`:''}
+        <button class="btn btn-outline btn-sm" onclick="${type==='dom'?'openDOMModal':'openDFMModal'}('${i.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="del('${dType}','${i.id}')">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById(totalId).textContent=fmt(tot);
+  document.getElementById(remId).textContent=fmt(rmt);
+}
+function renderDOM(){renderDebtList(D.debtsOnMe,'dom-tbody','dom-total','dom-rem','dom');}
+function renderDFM(){renderDebtList(D.debtsForMe,'dfm-tbody','dfm-total','dfm-rem','dfm');}
+
+// ════ PAYMENT ════
+function openPay(type,id){
+  curPayType=type;curPayId=id;
+  const item=D[type].find(i=>String(i.id)===String(id));
+  document.getElementById('pay-title').textContent=type==='debtsOnMe'?`💳 دفعة لـ: ${item.name}`:`💳 استلام من: ${item.name}`;
+  const prevs=item.payments||[];
+  document.getElementById('pay-list').innerHTML=!prevs.length?'<p style="color:var(--text3);font-size:12px;margin-bottom:10px;">لا توجد دفعات سابقة</p>':
+    '<div style="margin-bottom:10px;">'+prevs.map(p=>`<div class="pay-item"><span style="color:var(--green);font-weight:700;">${fmt(p.amount)} ج.م</span><span class="tm">${p.date||''} ${p.note?'| '+p.note:''}</span><button class="btn btn-danger btn-sm" onclick="delPay('${p.id}')">🗑️</button></div>`).join('')+'</div>';
+  ['pay-amount','pay-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('pay-hint').textContent='';
+  document.getElementById('pay-date').value=today();
+  openModal('modal-payment');
+}
+function savePayment(){
+  const egp=getEGP('pay');
+  if(!egp||egp<=0) return alert('ادخل مبلغ صحيح');
+  const raw=parseFloat(document.getElementById('pay-amount').value);
+  const cur=curState['pay']==='USD'?'USD':'EGP';
+  const item=D[curPayType].find(i=>String(i.id)===String(curPayId));
+  if(!item.payments) item.payments=[];
+  item.payments.push({id:Date.now(),amount:egp,rawAmount:raw,currency:cur,date:document.getElementById('pay-date').value,note:document.getElementById('pay-note').value});
+  save();renderAll();closeModal('modal-payment');
+}
+function delPay(pid){
+  const item=D[curPayType].find(i=>String(i.id)===String(curPayId));
+  item.payments=item.payments.filter(p=>String(p.id)!==String(pid));
+  save();renderAll();openPay(curPayType,curPayId);
+}
+
+// ════ TRANSACTIONS ════
+const TX_CATS={
+  income:['مرتب','إيجار','أرباح','هدية','مبيعات','تحصيل دين','أخرى'],
+  expense:['مصروف بيت','فواتير','صحة','تعليم','مواصلات','طعام','ملابس','أخرى'],
+  transfer:['تحويل بنكي','سحب كاش','إيداع','أخرى']
+};
+const TX_ICONS={income:'⬆️',expense:'⬇️',transfer:'🔄'};
+const TX_LABELS={income:'دخل',expense:'صرف',transfer:'تحويل'};
+
+function openTxModal(type){
+  txLinkedDebt=null;
+  document.getElementById('tx-type').value=type;
+  const titles={income:'⬆️ إضافة دخل',expense:'⬇️ تسجيل صرف',transfer:'🔄 تحويل'};
+  document.getElementById('tx-title').textContent=titles[type];
+  document.getElementById('tx-cat').innerHTML=TX_CATS[type].map(c=>`<option>${c}</option>`).join('');
+  document.getElementById('tx-date').value=today();
+  ['tx-amount','tx-desc','tx-party','tx-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('tx-hint').textContent='';
+
+  // Build debt link panel
+  const box=document.getElementById('tx-debt-box');
+  const label=document.getElementById('tx-debt-label');
+  const listEl=document.getElementById('tx-debt-list');
+
+  // income → تحصيل دين (debtsForMe)  |  expense → تسليم سلفة (debtsOnMe)
+  let debtList=[], debtType='';
+  if(type==='income'){
+    debtList=D.debtsForMe.filter(i=>rem(i)>0);
+    debtType='debtsForMe';
+    label.textContent='🔗 تحصيل دين — اختر الشخص (اختياري)';
+  } else if(type==='expense'){
+    debtList=D.debtsOnMe.filter(i=>rem(i)>0);
+    debtType='debtsOnMe';
+    label.textContent='🔗 تسليم سلفة / سداد دين — اختر الشخص (اختياري)';
+  }
+
+  if(type==='transfer'||!debtList.length){
+    box.style.display=type==='transfer'?'none':'block';
+    listEl.innerHTML='<span style="color:var(--text3);font-size:12px;">لا توجد ديون مفتوحة</span>';
+  } else {
+    box.style.display='block';
+    listEl.innerHTML=debtList.map(i=>
+      `<span class="debt-badge" id="db-${i.id}" onclick="toggleDebt('${debtType}','${i.id}',this)">${i.name} (${fmt(rem(i))} ج.م)</span>`
+    ).join('');
+  }
+
+  openModal('modal-tx');
+}
+
+function toggleDebt(type,id,el){
+  if(txLinkedDebt && txLinkedDebt.id===String(id)){
+    txLinkedDebt=null;
+    el.classList.remove('selected');
+  } else {
+    document.querySelectorAll('.debt-badge').forEach(b=>b.classList.remove('selected'));
+    txLinkedDebt={type,id:String(id)};
+    el.classList.add('selected');
+  }
+}
+
+function saveTx(){
+  const desc=document.getElementById('tx-desc').value.trim();
+  const egp=getEGP('tx');
+  if(!desc||!egp) return alert('الوصف والمبلغ مطلوبان');
+  const raw=parseFloat(document.getElementById('tx-amount').value);
+  const cur=curState['tx']==='USD'?'USD':'EGP';
+  const type=document.getElementById('tx-type').value;
+
+  const tx={id:Date.now(),type,desc,amount:egp,rawAmount:raw,currency:cur,date:document.getElementById('tx-date').value,cat:document.getElementById('tx-cat').value,party:document.getElementById('tx-party').value,note:document.getElementById('tx-note').value,linkedDebt:txLinkedDebt||null};
+  if(!D.transactions) D.transactions=[];
+  D.transactions.unshift(tx);
+
+  // Auto-register payment on linked debt
+  if(txLinkedDebt){
+    const item=D[txLinkedDebt.type].find(i=>String(i.id)===txLinkedDebt.id);
+    if(item){
+      if(!item.payments) item.payments=[];
+      item.payments.push({id:Date.now()+1,amount:egp,rawAmount:raw,currency:cur,date:tx.date,note:desc});
+    }
+  }
+
+  save();renderAll();closeModal('modal-tx');
+  txLinkedDebt=null;
+  ['tx-desc','tx-amount','tx-party','tx-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('tx-hint').textContent='';
+}
+
+function filterTx(f,btn){
+  txFilter=f;
+  document.querySelectorAll('.tx-fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTx();
+}
+
+function delTx(id){
+  D.transactions=D.transactions.filter(t=>String(t.id)!==String(id));
+  save();renderAll();
+}
+
+function renderTx(){
+  const container=document.getElementById('tx-container');
+  if(!container) return;
+  updateMonthLabel();
+  const txs=D.transactions||[];
+
+  // month summary — always current month
+  const now=new Date();
+  const thisM=txs.filter(t=>{
+    if(!t.date) return false;
+    const d=new Date(t.date);
+    return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
+  });
+  const mi=thisM.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const me=thisM.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const mn=mi-me;
+  const setEl=(id,val,color)=>{const e=document.getElementById(id);if(e){e.textContent=val;if(color)e.style.color=color;}};
+  setEl('tx-min',fmt(mi)+' ج.م',null);
+  setEl('tx-mex',fmt(me)+' ج.م',null);
+  setEl('tx-mnet',(mn>=0?'+':'')+fmt(mn)+' ج.م',mn>=0?'var(--green)':'var(--red)');
+
+  // apply month filter
+  let monthFiltered=txs;
+  if(txViewMonth){
+    monthFiltered=txs.filter(t=>{
+      if(!t.date) return false;
+      const d=new Date(t.date);
+      return d.getMonth()===txViewMonth.m&&d.getFullYear()===txViewMonth.y;
+    });
+  }
+
+  // apply type filter
+  const filtered=txFilter==='all'?monthFiltered:monthFiltered.filter(t=>t.type===txFilter);
+  if(!filtered.length){
+    container.innerHTML='<div class="tx-empty"><div style="font-size:44px;margin-bottom:10px;">📋</div><p>لا توجد حركات'+(txViewMonth?' في هذا الشهر':' بعد')+'</p></div>';
+    return;
+  }
+
+  // group by date
+  const groups={};
+  filtered.forEach(t=>{const k=t.date||'بدون تاريخ';if(!groups[k])groups[k]=[];groups[k].push(t);});
+
+  const dlabel=d=>{
+    if(!d||d==='بدون تاريخ') return 'بدون تاريخ';
+    const t=today();const y=new Date();y.setDate(y.getDate()-1);
+    if(d===t) return 'اليوم';
+    if(d===y.toISOString().split('T')[0]) return 'أمس';
+    return new Date(d).toLocaleDateString('ar-EG',{weekday:'long',month:'long',day:'numeric'});
+  };
+
+  container.innerHTML=Object.entries(groups).map(([date,items])=>`
+    <div>
+      <div class="tx-dh">📅 ${dlabel(date)}</div>
+      <div class="tx-list">
+        ${items.map(t=>{
+          const linked=t.linkedDebt?`<span style="font-size:10px;background:rgba(201,168,76,.15);color:var(--gold);padding:2px 7px;border-radius:10px;">🔗 ${t.linkedDebt.type==='debtsForMe'?'تحصيل':'سداد'}</span>`:'';
+          return `<div class="tx-item">
+            <div class="tx-ico ${t.type==='income'?'inc':t.type==='expense'?'exp':'trf'}">${TX_ICONS[t.type]}</div>
+            <div class="tx-body">
+              <div class="tx-desc">${t.desc}</div>
+              <div class="tx-meta">
+                <span>${TX_LABELS[t.type]}</span>
+                <span>${t.cat||''}</span>
+                ${t.party?`<span>• ${t.party}</span>`:''}
+                ${linked}
+                ${t.note?`<span class="tm">• ${t.note}</span>`:''}
+              </div>
+            </div>
+            <div class="tx-right">
+              <div class="tx-amt ${t.type==='income'?'inc':t.type==='expense'?'exp':'trf'} sensitive">
+                ${t.type==='income'?'+':t.type==='expense'?'-':''}${fmt(t.amount)} ج.م
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="delTx('${t.id}')">🗑️</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ════ SEARCH ════
+function doSearch(q){
+  if(!CFG.search) return;
+  const res=document.getElementById('search-results');
+  q=q.trim();
+  if(!q){res.classList.remove('open');return;}
+  const all=[];
+  D.cash.forEach(i=>all.push({name:i.desc,val:fmt(i.amount)+' ج.م',cat:'💵 نقدي',id:i.id,type:'cash'}));
+  D.gold.forEach(i=>all.push({name:i.desc,val:i.grams+'جم',cat:'🥇 ذهب',id:i.id,type:'gold'}));
+  D.property.forEach(i=>all.push({name:i.desc,val:fmt(i.value)+' ج.م',cat:'🏠 عقار',id:i.id,type:'property'}));
+  D.other.forEach(i=>all.push({name:i.desc,val:fmt(i.value)+' ج.م',cat:'📦 أخرى',id:i.id,type:'other'}));
+  D.debtsOnMe.forEach(i=>all.push({name:i.name,val:fmt(rem(i))+' ج.م متبقي',cat:'🔴 دين عليّ',id:i.id,type:'debtsOnMe'}));
+  D.debtsForMe.forEach(i=>all.push({name:i.name,val:fmt(rem(i))+' ج.م متبقي',cat:'🟢 دين لي',id:i.id,type:'debtsForMe'}));
+  D.transactions.forEach(i=>all.push({name:i.desc,val:(i.type==='income'?'+':'-')+fmt(i.amount)+' ج.م',cat:'📋 '+(i.cat||'حركة'),id:i.id,type:'tx'}));
+  const hits=all.filter(x=>x.name&&x.name.includes(q)).slice(0,8);
+  if(!hits.length){res.innerHTML='<div class="sr-empty">لا توجد نتائج</div>';res.classList.add('open');return;}
+  res.innerHTML=hits.map(h=>`<div class="sr-item" onclick="searchGoTo('${h.type}','${h.id}')">
+    <div><div class="sr-name">${h.name}</div><div class="sr-meta">${h.cat}</div></div>
+    <div class="sr-val">${h.val}</div>
+  </div>`).join('');
+  res.classList.add('open');
+}
+function closeSearch(){
+  document.getElementById('search-results').classList.remove('open');
+  document.getElementById('search-input').value='';
+}
+const PAGE_MAP={cash:'cash',gold:'gold',property:'property',other:'other',debtsOnMe:'debts-on-me',debtsForMe:'debts-for-me',tx:'transactions'};
+function searchGoTo(type,id){
+  closeSearch();
+  const pageId=PAGE_MAP[type]||'dashboard';
+  // find and click the nav button
+  const navBtn=document.getElementById('nav-'+pageId)||document.querySelector(`.dropdown-item[onclick*="${pageId}"]`);
+  if(navBtn) navBtn.click();
+}
+
+// ════ DEBT REMINDERS ════
+function renderReminders(){
+  const el=document.getElementById('dash-reminders');
+  if(!el) return;
+  if(!CFG.reminders){el.innerHTML='';return;}
+  const today_=today();
+  const items=[];
+  // debts on me — show unpaid
+  D.debtsOnMe.filter(i=>rem(i)>0).forEach(i=>{
+    const days=i.date?Math.floor((new Date(today_)-new Date(i.date))/(1000*60*60*24)):null;
+    items.push({label:`دين لـ ${i.name}`,val:fmt(rem(i))+' ج.م متبقي',days,type:'on'});
+  });
+  // debts for me — show unpaid
+  D.debtsForMe.filter(i=>rem(i)>0).forEach(i=>{
+    const days=i.date?Math.floor((new Date(today_)-new Date(i.date))/(1000*60*60*24)):null;
+    items.push({label:`${i.name} مدين لك`,val:fmt(rem(i))+' ج.م متبقي',days,type:'for'});
+  });
+  if(!items.length){el.innerHTML='';return;}
+  const badge=days=>{
+    if(days===null) return '<span class="remind-badge rb-ok">مفتوح</span>';
+    if(days>60) return `<span class="remind-badge rb-urgent">منذ ${days} يوم</span>`;
+    if(days>14) return `<span class="remind-badge rb-soon">منذ ${days} يوم</span>`;
+    return `<span class="remind-badge rb-ok">منذ ${days} يوم</span>`;
+  };
+  el.innerHTML=`<div style="margin-top:20px;">
+    <div class="section-hdr"><div class="section-ttl">🔔 تذكير الديون</div></div>
+    <div class="remind-box">
+      <div class="remind-hdr">${items.length} دين مفتوح</div>
+      ${items.map(i=>`<div class="remind-item">
+        <div class="remind-left">
+          <div class="rn">${i.type==='on'?'🔴':'🟢'} ${i.label}</div>
+          <div class="rd">${i.val}</div>
+        </div>
+        ${badge(i.days)}
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ════ MONTH FILTER ════
+const AR_MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function changeMonth(dir){
+  if(!txViewMonth) txViewMonth={y:new Date().getFullYear(),m:new Date().getMonth()};
+  txViewMonth.m+=dir;
+  if(txViewMonth.m>11){txViewMonth.m=0;txViewMonth.y++;}
+  if(txViewMonth.m<0){txViewMonth.m=11;txViewMonth.y--;}
+  document.getElementById('mn-all-btn').style.opacity='1';
+  renderTx();
+}
+function toggleAllMonths(btn){
+  if(txViewMonth===null){
+    const now=new Date();
+    txViewMonth={y:now.getFullYear(),m:now.getMonth()};
+    btn.textContent='عرض الكل';
+  } else {
+    txViewMonth=null;
+    btn.textContent='الشهر الحالي';
+  }
+  renderTx();
+}
+function updateMonthLabel(){
+  const lbl=document.getElementById('mn-label');
+  if(!lbl) return;
+  if(!txViewMonth){lbl.textContent='كل الحركات';return;}
+  lbl.textContent=AR_MONTHS[txViewMonth.m]+' '+txViewMonth.y;
+}
+
+// ════ DELETE ════
+function del(type,id){
+  if(!confirm('حذف هذا البند؟')) return;
+  D[type]=D[type].filter(i=>String(i.id)!==String(id));
+  save();renderAll();
+}
+
+// ════ SETTINGS CONFIG ════
+let CFG = {
+  currency:'EGP',
+  search:true, reminders:true,
+  visiblePages:{cash:true,gold:true,property:true,other:true,dom:true,dfm:true},
+  pin:null
+};
+
+function loadCFG(){
+  const s=localStorage.getItem('hesaby_cfg');
+  if(s){const p=JSON.parse(s);CFG={...CFG,...p};if(!CFG.visiblePages)CFG.visiblePages={cash:true,gold:true,property:true,other:true,dom:true,dfm:true};}
+}
+function saveCfg(){
+  CFG.currency=document.getElementById('cfg-cur')?.value||CFG.currency;
+  CFG.search=document.getElementById('cfg-search')?.checked??CFG.search;
+  CFG.reminders=document.getElementById('cfg-reminders')?.checked??CFG.reminders;
+  CFG.visiblePages={
+    cash:!!document.getElementById('cfg-show-cash')?.checked,
+    gold:!!document.getElementById('cfg-show-gold')?.checked,
+    property:!!document.getElementById('cfg-show-prop')?.checked,
+    other:!!document.getElementById('cfg-show-other')?.checked,
+    dom:!!document.getElementById('cfg-show-dom')?.checked,
+    dfm:!!document.getElementById('cfg-show-dfm')?.checked,
+  };
+  localStorage.setItem('hesaby_cfg',JSON.stringify(CFG));
+}
+function applyBranding(){}
+function applyFeatures(){
+  // search
+  const sw=document.getElementById('search-wrap');
+  if(sw) sw.style.display=CFG.search?'':'none';
+  // nav pages
+  const map={cash:'nav-cash',gold:'nav-gold',property:'nav-property',other:'nav-other',dom:'nav-debts-on-me',dfm:'nav-debts-for-me'};
+  Object.entries(map).forEach(([k,navId])=>{
+    const el=document.getElementById(navId);
+    if(el) el.style.display=CFG.visiblePages[k]?'':'none';
+  });
+}
+function populateSettings(){
+  const g=id=>document.getElementById(id);
+  g('cfg-cur').value=CFG.currency;
+  g('cfg-search').checked=CFG.search;
+  g('cfg-reminders').checked=CFG.reminders;
+  g('cfg-show-cash').checked=!!CFG.visiblePages.cash;
+  g('cfg-show-gold').checked=!!CFG.visiblePages.gold;
+  g('cfg-show-prop').checked=!!CFG.visiblePages.property;
+  g('cfg-show-other').checked=!!CFG.visiblePages.other;
+  g('cfg-show-dom').checked=!!CFG.visiblePages.dom;
+  g('cfg-show-dfm').checked=!!CFG.visiblePages.dfm;
+  // pin status
+  const hasPin=!!CFG.pin;
+  g('pin-status-text').textContent=hasPin?'مفعّل ✓':'غير مفعّل';
+  g('btn-set-pin').style.display=hasPin?'none':'';
+  g('btn-remove-pin').style.display=hasPin?'':'none';
+  g('btn-change-pin').style.display=hasPin?'':'none';
+  // biometric status
+  const hasBio = !!CFG.biometricEnabled && !!localStorage.getItem(BIO_KEY);
+  const bioRow = g('bio-settings-row');
+  if(bioRow) bioRow.style.display = bioSupported() ? '' : 'none';
+  const bst = g('bio-status-text');
+  if(bst) bst.textContent = hasBio ? 'مفعّلة ✓' : (bioSupported() ? 'غير مفعّلة' : 'غير مدعومة في هذا المتصفح');
+  const beb = g('btn-enable-bio'); if(beb) beb.style.display = hasBio ? 'none' : '';
+  const bdb = g('btn-disable-bio'); if(bdb) bdb.style.display = hasBio ? '' : 'none';
+  // last backup
+  const lb=localStorage.getItem('hesaby_last_backup');
+  g('last-backup-date').textContent=lb||'—';
+}
+function resetAllData(){
+  // require PIN if set
+  if(CFG.pin){
+    openResetPinConfirm();
+    return;
+  }
+  if(!confirm('هذا الإجراء سيمسح كل البيانات نهائياً. متأكد؟')) return;
+  if(!confirm('تأكيد أخير — هل أنت متأكد تماماً؟')) return;
+  D={cash:[],gold:[],property:[],other:[],debtsOnMe:[],debtsForMe:[],transactions:[]};
+  save(); renderAll(); showToast('✅ تم مسح كل البيانات');
+}
+
+// PIN-protected reset
+let resetPinBuffer='';
+function openResetPinConfirm(){
+  resetPinBuffer='';
+  document.getElementById('reset-pin-err').textContent='';
+  updateResetDots(0);
+  openModal('modal-reset-confirm');
+}
+function resetPinKey(k){
+  if(k==='DEL'){resetPinBuffer=resetPinBuffer.slice(0,-1);}
+  else if(resetPinBuffer.length<4){resetPinBuffer+=k;}
+  updateResetDots(resetPinBuffer.length);
+  if(resetPinBuffer.length===4) setTimeout(()=>verifyResetPin(),150);
+}
+function updateResetDots(n){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById(`rpd${i}`);
+    if(d){d.classList.toggle('filled',i<n);d.classList.remove('error');}
+  }
+}
+function verifyResetPin(){
+  if(resetPinBuffer===CFG.pin){
+    closeModal('modal-reset-confirm');
+    if(!confirm('هذا الإجراء سيمسح كل البيانات نهائياً. متأكد؟')) return;
+    D={cash:[],gold:[],property:[],other:[],debtsOnMe:[],debtsForMe:[],transactions:[]};
+    save(); renderAll(); showToast('✅ تم مسح كل البيانات');
+  } else {
+    document.querySelectorAll('[id^=rpd]').forEach(d=>d.classList.add('error'));
+    document.getElementById('reset-pin-err').textContent='PIN خاطئ';
+    setTimeout(()=>{resetPinBuffer='';updateResetDots(0);document.getElementById('reset-pin-err').textContent='';},800);
+  }
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const d=new Date().toISOString().split('T')[0];
+  a.href=url; a.download=`hesaby-backup-${d}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  localStorage.setItem('hesaby_last_backup',d);
+  const el=document.getElementById('last-backup-date');
+  if(el) el.textContent=d;
+  return `hesaby-backup-${d}.json`;
+}
+
+// ════ PIN LOGIC ════
+let pinBuffer='';
+let pinMode='unlock'; // 'unlock' | 'setup-new' | 'setup-confirm' | 'change-old'
+let pinTempNew='';
+
+// ════ BIOMETRIC (WebAuthn) ════
+const BIO_RPID = location.hostname || 'localhost';
+const BIO_KEY = 'hesaby_bio_cred';
+
+function bioSupported(){
+  return !!(window.PublicKeyCredential && navigator.credentials);
+}
+
+async function registerBiometric(){
+  if(!bioSupported()) return false;
+  try {
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    const userId = crypto.getRandomValues(new Uint8Array(16));
+    const cred = await navigator.credentials.create({publicKey:{
+      challenge, rp:{name:'حسابي', id: BIO_RPID},
+      user:{id:userId, name:'user', displayName:'مستخدم حسابي'},
+      pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+      authenticatorSelection:{userVerification:'required'},
+      timeout:60000
+    }});
+    // store credential id
+    const credId = btoa(String.fromCharCode(...new Uint8Array(cred.rawId)));
+    localStorage.setItem(BIO_KEY, credId);
+    CFG.biometricEnabled = true;
+    localStorage.setItem('hesaby_cfg', JSON.stringify(CFG));
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+async function triggerBiometric(){
+  if(!bioSupported()) return;
+  const credIdB64 = localStorage.getItem(BIO_KEY);
+  if(!credIdB64) return;
+  const btn = document.getElementById('bio-btn');
+  const errEl = document.getElementById('bio-err');
+  if(btn) { btn.style.transform = 'scale(0.95)'; btn.textContent = '⏳'; }
+  errEl.textContent = '';
+  try {
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    const credId = Uint8Array.from(atob(credIdB64), c => c.charCodeAt(0));
+    await navigator.credentials.get({publicKey:{
+      challenge,
+      allowCredentials:[{type:'public-key', id:credId}],
+      userVerification:'required',
+      timeout:60000
+    }});
+    // success
+    document.getElementById('pin-screen').style.display = 'none';
+    pinBuffer = '';
+    showToast('✅ تم التحقق بالبصمة');
+  } catch(e) {
+    if(btn){ btn.style.transform=''; btn.textContent='👆'; }
+    errEl.textContent = 'فشل التحقق — حاول مجدداً';
+    setTimeout(()=>errEl.textContent='', 2500);
+  }
+}
+
+function showBiometricSection(){
+  const bs = document.getElementById('biometric-section');
+  const ps = document.getElementById('pin-section');
+  if(bs){ bs.style.display = 'flex'; }
+  if(ps){ ps.style.display = 'none'; }
+  // auto-trigger
+  setTimeout(triggerBiometric, 300);
+}
+
+function showPinFallback(){
+  const bs = document.getElementById('biometric-section');
+  const ps = document.getElementById('pin-section');
+  const bbb = document.getElementById('back-to-bio-btn');
+  if(bs) bs.style.display = 'none';
+  if(ps) ps.style.display = 'flex';
+  if(bbb && CFG.biometricEnabled) bbb.style.display = '';
+  pinBuffer = ''; updatePinDots('pin-dots', 0);
+  document.getElementById('pin-err').textContent = '';
+}
+
+function checkPinOnLoad(){
+  if(CFG.pin){
+    document.getElementById('pin-screen').style.display='flex';
+    const hasBio = CFG.biometricEnabled && !!localStorage.getItem(BIO_KEY) && bioSupported();
+    if(hasBio){
+      showBiometricSection();
+      document.getElementById('pin-screen-sub').textContent = 'استخدم البصمة للدخول';
+    } else {
+      showPinFallback();
+      document.getElementById('pin-screen-sub').textContent = 'أدخل الـ PIN للمتابعة';
+    }
+  }
+}
+
+function pinKey(k){
+  if(k==='DEL'){ pinBuffer=pinBuffer.slice(0,-1); }
+  else if(k==='F'){ pinForgot(); return; }
+  else if(pinBuffer.length<4){ pinBuffer+=k; }
+  updatePinDots('pin-dots',pinBuffer.length);
+  if(pinBuffer.length===4) setTimeout(()=>verifyPin(),150);
+}
+
+function verifyPin(){
+  if(pinBuffer===CFG.pin){
+    document.getElementById('pin-screen').style.display='none';
+    pinBuffer='';
+  } else {
+    // shake & clear
+    document.querySelectorAll('#pin-dots .pin-dot').forEach(d=>d.classList.add('error'));
+    document.getElementById('pin-err').textContent='PIN خاطئ';
+    setTimeout(()=>{
+      document.querySelectorAll('#pin-dots .pin-dot').forEach(d=>{d.classList.remove('error');d.classList.remove('filled');});
+      document.getElementById('pin-err').textContent='';
+      pinBuffer='';
+    },800);
+  }
+}
+
+function pinForgot(){
+  if(!CFG.securityQuestion){
+    // no security question — just delete PIN directly
+    showToast('لا يوجد سؤال استعادة — تم حذف الـ PIN');
+    CFG.pin=null; CFG.securityAnswer=null; CFG.securityQuestion=null;
+    localStorage.setItem('hesaby_cfg',JSON.stringify(CFG));
+    document.getElementById('pin-screen').style.display='none';
+    pinBuffer='';
+    return;
+  }
+  // show recovery view inside pin-screen
+  document.getElementById('pin-main-view').style.display='none';
+  document.getElementById('pin-recovery-view').style.display='block';
+  document.getElementById('rv-question').textContent=CFG.securityQuestion;
+  document.getElementById('rv-answer').value='';
+  document.getElementById('rv-err').textContent='';
+  document.getElementById('rv-step1').style.display='block';
+  document.getElementById('rv-step2').style.display='none';
+  rvBuf=''; rvNewPin=''; rvConfirm=false;
+}
+function closeRecovery(){
+  document.getElementById('pin-main-view').style.display='block';
+  document.getElementById('pin-recovery-view').style.display='none';
+  pinBuffer=''; updatePinDots('pin-dots',0);
+  document.getElementById('pin-err').textContent='';
+}
+function checkRVAnswer(){
+  const ans=document.getElementById('rv-answer').value.trim().toLowerCase();
+  if(!ans){ document.getElementById('rv-err').textContent='اكتب إجابتك أولاً'; return; }
+  if(ans!==CFG.securityAnswer){ document.getElementById('rv-err').textContent='❌ إجابة خاطئة'; return; }
+  // correct → go to step 2
+  document.getElementById('rv-step1').style.display='none';
+  document.getElementById('rv-step2').style.display='block';
+  rvBuf=''; rvNewPin=''; rvConfirm=false;
+  document.getElementById('rv-new-sub').textContent='أدخل PIN جديد';
+  updateRVDots(0);
+}
+
+let rvBuf='', rvNewPin='', rvConfirm=false;
+function rvNewKey(k){
+  if(k==='DEL'){ rvBuf=rvBuf.slice(0,-1); }
+  else if(rvBuf.length<4){ rvBuf+=k; }
+  updateRVDots(rvBuf.length);
+  if(rvBuf.length===4) setTimeout(handleRVPin,150);
+}
+function updateRVDots(n){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById(`rvd${i}`);
+    if(d){d.classList.toggle('filled',i<n);d.classList.remove('error');}
+  }
+}
+function handleRVPin(){
+  if(!rvConfirm){
+    rvNewPin=rvBuf; rvBuf=''; rvConfirm=true;
+    document.getElementById('rv-new-sub').textContent='أعد إدخال الـ PIN للتأكيد';
+    updateRVDots(0);
+  } else {
+    if(rvBuf!==rvNewPin){
+      document.querySelectorAll('[id^=rvd]').forEach(d=>d.classList.add('error'));
+      document.getElementById('rv-pin-err').textContent='الـ PIN غير متطابق';
+      setTimeout(()=>{rvBuf='';rvNewPin='';rvConfirm=false;updateRVDots(0);
+        document.getElementById('rv-pin-err').textContent='';
+        document.getElementById('rv-new-sub').textContent='أدخل PIN جديد';},800);
+      return;
+    }
+    CFG.pin=rvNewPin;
+    localStorage.setItem('hesaby_cfg',JSON.stringify(CFG));
+    document.getElementById('pin-screen').style.display='none';
+    document.getElementById('pin-main-view').style.display='block';
+    document.getElementById('pin-recovery-view').style.display='none';
+    pinBuffer=''; rvBuf=''; rvNewPin='';
+    showToast('✅ تم تعيين PIN جديد');
+  }
+}
+
+function openRecovery(){ pinForgot(); } // alias kept for compatibility
+
+function updatePinDots(containerId, count){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById(containerId.replace('dots','d').replace('-dots','')==='pin'?`pd${i}`:containerId==='pin-dots'?`pd${i}`:`psd${i}`);
+    if(d){ d.classList.toggle('filled',i<count); d.classList.remove('error'); }
+  }
+}
+
+// PIN SETUP
+let pinSetupBuffer='';
+function openPinSetup(){
+  pinSetupBuffer=''; pinTempNew='';
+  pinMode='setup-new';
+  document.getElementById('pin-setup-title').textContent='🔐 تفعيل PIN';
+  document.getElementById('pin-setup-sub').textContent='اختر رقم PIN من 4 أرقام';
+  document.getElementById('pin-setup-err').textContent='';
+  updateSetupDots(0);
+  openModal('modal-pin-setup');
+}
+function openPinChange(){
+  pinSetupBuffer=''; pinTempNew='';
+  pinMode='change-old';
+  document.getElementById('pin-setup-title').textContent='🔄 تغيير PIN';
+  document.getElementById('pin-setup-sub').textContent='أدخل الـ PIN الحالي';
+  document.getElementById('pin-setup-err').textContent='';
+  updateSetupDots(0);
+  openModal('modal-pin-setup');
+}
+function pinSetupKey(k){
+  if(k==='DEL'){ pinSetupBuffer=pinSetupBuffer.slice(0,-1); }
+  else if(pinSetupBuffer.length<4){ pinSetupBuffer+=k; }
+  updateSetupDots(pinSetupBuffer.length);
+  if(pinSetupBuffer.length===4) setTimeout(()=>handlePinSetup(),150);
+}
+function updateSetupDots(n){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById(`psd${i}`);
+    if(d){d.classList.toggle('filled',i<n);d.classList.remove('error');}
+  }
+}
+function handlePinSetup(){
+  if(pinMode==='change-old'){
+    if(pinSetupBuffer!==CFG.pin){
+      document.getElementById('pin-setup-err').textContent='PIN خاطئ';
+      document.querySelectorAll('[id^=psd]').forEach(d=>d.classList.add('error'));
+      setTimeout(()=>{pinSetupBuffer='';updateSetupDots(0);document.getElementById('pin-setup-err').textContent='';},700);
+      return;
+    }
+    pinSetupBuffer=''; pinMode='setup-new';
+    document.getElementById('pin-setup-sub').textContent='أدخل الـ PIN الجديد';
+    document.getElementById('pin-setup-err').textContent='';
+    updateSetupDots(0); return;
+  }
+  if(pinMode==='setup-new'){
+    pinTempNew=pinSetupBuffer; pinSetupBuffer='';
+    pinMode='setup-confirm';
+    document.getElementById('pin-setup-sub').textContent='أعد إدخال الـ PIN للتأكيد';
+    document.getElementById('pin-setup-err').textContent='';
+    updateSetupDots(0); return;
+  }
+  if(pinMode==='setup-confirm'){
+    if(pinSetupBuffer!==pinTempNew){
+      document.getElementById('pin-setup-err').textContent='الـ PIN غير متطابق، حاول مجدداً';
+      document.querySelectorAll('[id^=psd]').forEach(d=>d.classList.add('error'));
+      setTimeout(()=>{pinSetupBuffer='';pinTempNew='';pinMode='setup-new';
+        updateSetupDots(0);document.getElementById('pin-setup-sub').textContent='اختر رقم PIN من 4 أرقام';
+        document.getElementById('pin-setup-err').textContent='';},800);
+      return;
+    }
+    // PIN confirmed — now show security question step
+    document.getElementById('pin-setup-pad-section').style.display='none';
+    document.getElementById('pin-setup-cancel-btn').style.display='none';
+    document.getElementById('pin-setup-sq-section').style.display='block';
+    document.getElementById('pin-setup-sub').textContent='أضف سؤال الاستعادة';
+    document.getElementById('sq-answer').value='';
+    document.getElementById('sq-err').textContent='';
+  }
+}
+
+function savePinWithSQ(){
+  const answer=document.getElementById('sq-answer').value.trim();
+  const question=document.getElementById('sq-question').value;
+  if(!answer){ document.getElementById('sq-err').textContent='الإجابة مطلوبة'; return; }
+  CFG.pin=pinTempNew;
+  CFG.securityQuestion=question;
+  CFG.securityAnswer=answer.toLowerCase(); // store lowercase for case-insensitive match
+  localStorage.setItem('hesaby_cfg',JSON.stringify(CFG));
+  closeModal('modal-pin-setup');
+  // reset UI
+  document.getElementById('pin-setup-pad-section').style.display='block';
+  document.getElementById('pin-setup-cancel-btn').style.display='block';
+  document.getElementById('pin-setup-sq-section').style.display='none';
+  populateSettings();
+  showToast('✅ تم تفعيل الـ PIN مع سؤال الاستعادة');
+}
+
+// ════ PIN RECOVERY ════
+let recoveryNewPin='';
+let recoveryNewPinBuffer='';
+let recoveryConfirmMode=false;
+
+function openRecovery(){
+  // called from pin screen "نسيت" button
+  if(!CFG.securityQuestion){
+    // no security question set — just remove pin directly with warning
+    document.getElementById('pin-screen-sub').innerHTML='لا يوجد سؤال استعادة مسجل.<br><div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">'
+      +'<button onclick="confirmForgotPin()" style="padding:8px 20px;background:var(--red);border:none;border-radius:9px;color:#fff;font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">حذف الـ PIN</button>'
+      +'<button onclick="cancelForgotPin()" style="padding:8px 20px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;color:var(--text2);font-family:Cairo,sans-serif;font-size:13px;cursor:pointer;">إلغاء</button>'
+      +'</div>';
+    return;
+  }
+  recoveryNewPin=''; recoveryNewPinBuffer=''; recoveryConfirmMode=false;
+  document.getElementById('recovery-question').textContent=CFG.securityQuestion;
+  document.getElementById('recovery-answer').value='';
+  document.getElementById('recovery-err').textContent='';
+  document.getElementById('recovery-new-pin-section').style.display='none';
+  document.getElementById('recovery-check-btn').style.display='flex';
+  openModal('modal-pin-recovery');
+}
+
+function checkRecoveryAnswer(){
+  const ans=document.getElementById('recovery-answer').value.trim().toLowerCase();
+  if(!ans){ document.getElementById('recovery-err').textContent='اكتب إجابتك'; return; }
+  if(ans!==CFG.securityAnswer){
+    document.getElementById('recovery-err').textContent='❌ إجابة خاطئة';
+    return;
+  }
+  // correct — show new PIN pad
+  document.getElementById('recovery-err').textContent='';
+  document.getElementById('recovery-check-btn').style.display='none';
+  document.getElementById('recovery-new-pin-section').style.display='block';
+  recoveryNewPin=''; recoveryNewPinBuffer=''; recoveryConfirmMode=false;
+  updateRecoveryDots(0);
+  document.querySelector('#recovery-new-pin-section p').textContent='✅ إجابة صحيحة! أدخل PIN جديد';
+}
+
+function recoveryNewPinKey(k){
+  if(k==='DEL'){ recoveryNewPinBuffer=recoveryNewPinBuffer.slice(0,-1); }
+  else if(recoveryNewPinBuffer.length<4){ recoveryNewPinBuffer+=k; }
+  updateRecoveryDots(recoveryNewPinBuffer.length);
+  if(recoveryNewPinBuffer.length===4) setTimeout(()=>handleRecoveryPin(),150);
+}
+function updateRecoveryDots(n){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById(`rpnd${i}`);
+    if(d){d.classList.toggle('filled',i<n);d.classList.remove('error');}
+  }
+}
+function handleRecoveryPin(){
+  if(!recoveryConfirmMode){
+    recoveryNewPin=recoveryNewPinBuffer; recoveryNewPinBuffer='';
+    recoveryConfirmMode=true;
+    document.querySelector('#recovery-new-pin-section p').textContent='أعد إدخال الـ PIN للتأكيد';
+    updateRecoveryDots(0);
+  } else {
+    if(recoveryNewPinBuffer!==recoveryNewPin){
+      document.getElementById('recovery-pin-err').textContent='الـ PIN غير متطابق';
+      document.querySelectorAll('[id^=rpnd]').forEach(d=>d.classList.add('error'));
+      setTimeout(()=>{recoveryNewPin='';recoveryNewPinBuffer='';recoveryConfirmMode=false;
+        updateRecoveryDots(0);document.getElementById('recovery-pin-err').textContent='';
+        document.querySelector('#recovery-new-pin-section p').textContent='✅ إجابة صحيحة! أدخل PIN جديد';},800);
+      return;
+    }
+    CFG.pin=recoveryNewPin;
+    localStorage.setItem('hesaby_cfg',JSON.stringify(CFG));
+    closeModal('modal-pin-recovery');
+    document.getElementById('pin-screen').style.display='none';
+    pinBuffer='';
+    document.getElementById('pin-screen-sub').textContent='أدخل الـ PIN للمتابعة';
+    showToast('✅ تم تعيين PIN جديد بنجاح');
+  }
+}
+function removePin(){
+  if(!confirm('هل تريد إلغاء الـ PIN؟')) return;
+  CFG.pin=null;
+  localStorage.setItem('hesaby_cfg',JSON.stringify(CFG));
+  populateSettings();
+  showToast('✅ تم إلغاء الـ PIN');
+}
+
+// ════ UPDATE showPage for settings ════
+const _origShowPage=showPage;
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('nav-dashboard').classList.remove('active');
+  document.getElementById('nav-transactions').classList.remove('active');
+  document.getElementById('nav-settings').classList.remove('active');
+  document.querySelectorAll('.dropdown-item').forEach(b=>b.classList.remove('active'));
+  const dropBtn=document.getElementById('nav-dropdown-btn');
+  if(id==='dashboard'){
+    document.getElementById('nav-dashboard').classList.add('active');
+    dropBtn.classList.remove('has-active');
+  } else if(id==='transactions'){
+    document.getElementById('nav-transactions').classList.add('active');
+    dropBtn.classList.remove('has-active');
+  } else if(id==='settings'){
+    document.getElementById('nav-settings').classList.add('active');
+    dropBtn.classList.remove('has-active');
+    populateSettings();
+  } else {
+    if(btn) btn.classList.add('active');
+    dropBtn.classList.add('has-active');
+    if(btn){ const label=btn.textContent.trim(); dropBtn.innerHTML=`${label} <span class="arrow">▾</span>`; }
+  }
+}
+
+// ════ BIOMETRIC SETTINGS ════
+async function enrollBiometric(){
+  if(!bioSupported()){
+    showToast('⚠️ المتصفح لا يدعم البصمة');
+    return;
+  }
+  if(!CFG.pin){
+    showToast('⚠️ يجب تفعيل الـ PIN أولاً قبل البصمة');
+    return;
+  }
+  showToast('🔐 اتبع التعليمات لتسجيل البصمة...');
+  const ok = await registerBiometric();
+  if(ok){
+    showToast('✅ تم تفعيل البصمة بنجاح');
+    populateSettings();
+  } else {
+    showToast('❌ فشل تفعيل البصمة');
+  }
+}
+function disableBiometric(){
+  CFG.biometricEnabled = false;
+  localStorage.removeItem(BIO_KEY);
+  localStorage.setItem('hesaby_cfg', JSON.stringify(CFG));
+  populateSettings();
+  showToast('✅ تم إلغاء البصمة');
+}
+
+// ════ START ════
+init();
+</script>
+</body>
+</html>
